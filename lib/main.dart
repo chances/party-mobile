@@ -17,7 +17,7 @@ class PartyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return new MaterialApp(
-      title: 'Flutter Demo',
+      title: 'Party',
       theme: new ThemeData(
         primarySwatch: Colors.green,
         primaryColor: Constants.colorPrimary,
