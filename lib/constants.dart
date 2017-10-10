@@ -3,16 +3,16 @@ import 'package:flutter/painting.dart';
 
 class Constants {
 
-  static final Color colorPrimary = new Color(0xFF242424);
-  static final Color colorPrimaryDark = new Color(0xFF0A0A0A);
-  static final Color colorAccent = new Color(0xFF00B957);
-  static final Color colorAccentHighlight = new Color(0xFF00D764);
-  static final Color colorAccentLight = new Color(0xFFFCFCFC);
+  static final Color colorPrimary = const Color(0xFF242424);
+  static final Color colorPrimaryDark = const Color(0xFF0A0A0A);
+  static final Color colorAccent = const Color(0xFF00B957);
+  static final Color colorAccentHighlight = const Color(0xFF00D764);
+  static final Color colorAccentLight = const Color(0xFFFCFCFC);
 
-  static final Color colorAccentControlHighlight = new Color(0xFF292929);
+  static final Color colorAccentControlHighlight = const Color(0xFF292929);
 
-  static final Color colorAccentLightControl = new Color(0xFFA0A0A0);
-  static final Color colorAccentLightControlHighlight = new Color(0xFF797979);
+  static final Color colorAccentLightControl = const Color(0xFFA0A0A0);
+  static final Color colorAccentLightControlHighlight = const Color(0xFF797979);
 
   static final Color statusBarColor = colorPrimary;
 

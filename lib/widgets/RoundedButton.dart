@@ -120,13 +120,6 @@ class RoundedButton extends StatefulWidget {
 
   @override
   _RoundedButtonState createState() => new _RoundedButtonState();
-
-  @override
-  void debugFillDescription(List<String> description) {
-    super.debugFillDescription(description);
-    if (!enabled)
-      description.add('disabled');
-  }
 }
 
 class _RoundedButtonState extends State<RoundedButton> {
