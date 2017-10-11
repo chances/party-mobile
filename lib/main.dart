@@ -58,12 +58,12 @@ class _LoginPageState extends State<LoginPage> {
       if (SetLoginStateMessage.instanceOf(m)) {
         SetLoginStateMessage setLogin = new SetLoginStateMessage(m);
 
-//        Scaffold.of(context).showSnackBar(new SnackBar(content: new Text(
-//            setLogin.loggedIn ? 'Login succeeded' : 'Failed to login'
-//        )));
+        // TODO: Set login state in some app context?
       }
       if (SetAccessTokenStateMessage.instanceOf(m)) {
         SetAccessTokenStateMessage setToken = new SetAccessTokenStateMessage(m);
+
+        // TODO: Set auth token in some app context?
 
         setState(() {
           _accessToken = setToken.accessToken;
@@ -75,7 +75,7 @@ class _LoginPageState extends State<LoginPage> {
 
   Future<Null> _login() async {
     try {
-      platform.invokeMethod('login');
+      await platform.invokeMethod('login');
     } on PlatformException catch (e) {
       Scaffold.of(context).showSnackBar(new SnackBar(content: new Text(
           'Failed to login: ${e.message}.'
@@ -88,7 +88,7 @@ class _LoginPageState extends State<LoginPage> {
     final MediaQueryData mediaQueryData = MediaQuery.of(context);
     final double statusBarHeight = mediaQueryData.padding.top;
     final double screenHeight = mediaQueryData.size.height;
-    final double appBarMaxHeight = screenHeight - statusBarHeight;
+    final double screenHeightMinusAppBarHeight = screenHeight - statusBarHeight;
 
     return new Scaffold(
 //      appBar: new AppBar(
@@ -118,7 +118,7 @@ class _LoginPageState extends State<LoginPage> {
               top: statusBarHeight,
               right: 0.0,
               left: 0.0,
-              height: appBarMaxHeight,
+              height: screenHeightMinusAppBarHeight,
               child: new Column(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
