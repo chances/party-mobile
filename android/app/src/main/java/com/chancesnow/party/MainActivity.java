@@ -42,7 +42,7 @@ public class MainActivity extends FlutterActivity {
     super.onCreate(savedInstanceState);
     GeneratedPluginRegistrant.registerWith(this);
 
-    mSpotifyChannel = new BasicMessageChannel<Message>(
+    mSpotifyChannel = new BasicMessageChannel<>(
             getFlutterView(), SPOTIFY_MESSAGE_CHANNEL, Message.MESSAGE_CODEC
     );
 
@@ -102,17 +102,10 @@ public class MainActivity extends FlutterActivity {
         case TOKEN:
           String accessToken = response.getAccessToken();
           Date now = new Date();
-          Date tokenExpires = new Date(now.getTime() + (response.getExpiresIn() * 1000));
-//                    setLoginState(mSpotify.updateToken(response.getAccessToken(),
-//                            now.getTime() + (response.getExpiresIn() * 1000)
-//                    ));
-//
-//                    mSpotify.saveToken();
+          Date tokenExpiryDate = new Date(now.getTime() + (response.getExpiresIn() * 1000));
 
           setLoginState(true);
-          mSpotifyChannel.send(new SetAccessTokenStateMessage(
-                  accessToken, new Date(now.getTime() + (response.getExpiresIn() * 1000))
-          ));
+          mSpotifyChannel.send(new SetAccessTokenStateMessage(accessToken, tokenExpiryDate));
 
           new Handler(Looper.getMainLooper()).postDelayed(new Runnable() {
             @Override
