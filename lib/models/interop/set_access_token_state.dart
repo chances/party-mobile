@@ -1,4 +1,4 @@
-import 'Message.dart';
+import 'message.dart';
 
 class SetAccessTokenStateMessage {
   Message _message;

@@ -1,4 +1,4 @@
-import 'Message.dart';
+import 'message.dart';
 
 class SetLoginStateMessage {
   Message _message;
