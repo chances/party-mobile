@@ -18,16 +18,30 @@ class Constants {
 
   static final Typography typography = new Typography(platform: TargetPlatform.android);
 
-  static final Widget footer = new Positioned(
-      bottom: 16.0,
-      left: 0.0,
-      right: 0.0,
+  static final loadingColorAnimation =
+    const AlwaysStoppedAnimation<Color>(const Color(0xFF00B957));
+  static final Widget loading = new Column(
+    mainAxisAlignment: MainAxisAlignment.center,
+    crossAxisAlignment: CrossAxisAlignment.center,
+    children: [
+      new CircularProgressIndicator(
+        valueColor: loadingColorAnimation,
+      ),
+      new Container(
+        margin: const EdgeInsets.only(top: 6.0),
+        child: new Text("Loading..."),
+      )
+    ],
+  );
+
+  static final Widget footer = new Padding(
+      padding: new EdgeInsets.only(top: 8.0, bottom: 16.0),
       child: new Row(
           mainAxisAlignment: MainAxisAlignment.center,
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
             new Padding(
-              padding: new EdgeInsets.only(right: 16.0),
+              padding: new EdgeInsets.only(right: 10.0),
               child: new Text("Powered by"),
             ),
             new Image.asset(

@@ -2,6 +2,12 @@ name: party
 description: Party mobile client.
 
 dependencies:
+  spotify:
+    git:
+      url: git://github.com/chances/spotify-dart.git
+      ref: party
+  fluro: ^1.1.0
+  shared_preferences: ^0.2.5
   flutter:
     sdk: flutter
 
