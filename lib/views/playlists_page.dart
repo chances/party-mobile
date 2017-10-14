@@ -32,6 +32,9 @@ class _PlaylistsPageState extends State<PlaylistsPage> {
       _forceLoad = false;
       var futurePlaylists = app.spotify.client.playlists.me();
       return futurePlaylists.then((playlists) {
+        setState(() {
+          _loading = false;
+        });
         app.playlists.clear();
         app.playlists.addAll(playlists);
         return playlists;
@@ -97,9 +100,6 @@ class _PlaylistsPageState extends State<PlaylistsPage> {
                     new Expanded(child: Constants.loading)
                   ], crossAxisAlignment: CrossAxisAlignment.stretch);
                 default:
-                  if (snapshot.connectionState == ConnectionState.done) {
-                    _loading = false;
-                  }
                   return new Column(children: [
                     new Expanded(child: new ListView(
                         children: app.playlists.map((playlist) {
