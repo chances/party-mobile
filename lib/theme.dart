@@ -7,6 +7,9 @@ final partyTheme = new ThemeData.dark().copyWith(
     accentColor: Constants.colorAccent,
     backgroundColor: Constants.colorPrimary,
 
+    selectedRowColor: Constants.colorAccentLightControlHighlight,
+    dividerColor: Constants.colorAccentControlHighlight,
+
     iconTheme: new IconThemeData(color: Constants.colorAccentLight),
     textSelectionHandleColor: Constants.colorAccent
 );
