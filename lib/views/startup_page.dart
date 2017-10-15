@@ -5,7 +5,6 @@ import 'package:flutter/material.dart';
 
 import 'package:party/app_context.dart';
 import 'package:party/constants.dart';
-import 'package:spotify/spotify_io.dart' show User;
 
 class StartupPage extends StatefulWidget {
   StartupPage({Key key}) : super(key: key);
