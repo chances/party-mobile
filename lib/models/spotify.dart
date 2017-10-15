@@ -50,7 +50,7 @@ class Spotify {
     _tokenExpiry = null;
   }
 
-  Future<bool> loadFromPrefsAndValidateSession() {
+  Future<User> loadFromPrefsAndValidateSession() {
     return SharedPreferences.getInstance().then((prefs) {
       try {
         final accessToken = prefs.getString('SPOTIFY_ACCESS_TOKEN');
@@ -63,11 +63,12 @@ class Spotify {
 
           if (isTokenExpired) {
             logout();
+            return null;
           }
         }
       } catch (e) {}
 
-      return _tokenExpiry != null && !isTokenExpired;
+      return client.users.me();
     });
   }
 }

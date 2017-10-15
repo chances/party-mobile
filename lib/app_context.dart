@@ -10,6 +10,7 @@ class AppContext {
   Spotify get spotify => Spotify.getInstance();
   final router = new Router();
 
+  User user;
   var playlists = <PlaylistSimple>[];
 
   void logout(BuildContext context) {

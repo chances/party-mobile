@@ -11,8 +11,9 @@ void main() {
   // TODO: Add an app init '/' route, load stored config (SharedPrefs)
   app.router.define("/", handler: new Handler(
     handlerFunc: (BuildContext context, Map<String, dynamic> params) {
-      app.spotify.loadFromPrefsAndValidateSession().then((loggedIn) {
-        final path = loggedIn ? '/playlists' : '/login';
+      app.spotify.loadFromPrefsAndValidateSession().then((user) {
+        app.user = user;
+        final path = app.spotify.loggedIn ? '/playlists' : '/login';
 
         final route = app.router.matchRoute(
             context, path,
