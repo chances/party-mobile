@@ -76,42 +76,23 @@ class _LoginPageState extends State<LoginPage> {
 
   @override
   Widget build(BuildContext context) {
-    final MediaQueryData mediaQueryData = MediaQuery.of(context);
-    final double statusBarHeight = mediaQueryData.padding.top;
-    final double screenHeight = mediaQueryData.size.height;
-    final double screenHeightMinusAppBarHeight = screenHeight - statusBarHeight;
-
     return new Scaffold(
       backgroundColor: Constants.statusBarColor,
       body: new Stack(
         children: [
-          new Positioned(
-            top: statusBarHeight,
-            right: 0.0,
-            left: 0.0,
-            child: new Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                new Padding(
-                  padding: new EdgeInsets.only(top: 16.0),
-                  child: new Image.asset(
-                    'images/party_logo.png',
-                    width: 300.0,
-                  ),
+          new Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              new Padding(
+                padding: new EdgeInsets.only(top: 16.0),
+                child: new Image.asset(
+                  'images/party_logo.png',
+                  width: 300.0,
                 ),
-              ],
-            ),
+              ),
+            ],
           ),
-          new Positioned(
-              top: statusBarHeight,
-              right: 0.0,
-              left: 0.0,
-              height: screenHeightMinusAppBarHeight,
-              child: new Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [ buildLoginButtonOrLoading() ]
-              )
-          ),
+          new Center(child: buildLoginButtonOrLoading()),
           new Positioned(
             bottom: 0.0,
             left: 0.0,
