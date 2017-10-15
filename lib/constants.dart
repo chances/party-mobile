@@ -35,7 +35,7 @@ class Constants {
   );
 
   static final Widget footer = new Padding(
-      padding: new EdgeInsets.only(top: 8.0, bottom: 16.0),
+      padding: new EdgeInsets.only(top: 8.0, bottom: 8.0),
       child: new Row(
           mainAxisAlignment: MainAxisAlignment.center,
           crossAxisAlignment: CrossAxisAlignment.center,
