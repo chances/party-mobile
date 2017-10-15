@@ -22,7 +22,23 @@ void main() {
         Navigator.pushReplacement(context, route);
       });
 
-      return new Container(color: Constants.colorPrimaryDark);
+      return new Stack(children: [
+        new Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              new Padding(
+                padding: new EdgeInsets.only(top: 16.0),
+                child: new Image.asset(
+                  'images/party_logo.png',
+                  width: 300.0,
+                ),
+              ),
+            ]
+        ),
+        new Center(child: new CircularProgressIndicator(
+          valueColor: Constants.loadingColorAnimation,
+        ))
+      ]);
     }
   ));
   app.router.define("/login", handler: LoginPage.handler);
