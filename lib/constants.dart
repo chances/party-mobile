@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/painting.dart';
 
+import 'package:party/app_context.dart';
+
 class Constants {
 
   static final Color colorPrimary = const Color(0xFF242424);
@@ -47,6 +49,18 @@ class Constants {
           ]
       )
   );
+
+  static Widget logoutMenu(BuildContext context) {
+    return new PopupMenuButton(
+      onSelected: (String result) {
+        app.logout(context);
+      },
+      itemBuilder: (BuildContext context) =>
+      <PopupMenuEntry<String>>[
+        const PopupMenuItem(value: 'logout', child: const Text('Logout'))
+      ],
+    );
+  }
 
   // Interop
   static const String spotifyChannel = "com.chancesnow.party/spotify";

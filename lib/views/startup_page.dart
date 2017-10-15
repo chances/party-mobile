@@ -31,7 +31,7 @@ class _StartupPageState extends State<StartupPage> {
 
       return new Future.delayed(new Duration(milliseconds: 400), () {});
     }).then((_) {
-      final path = app.spotify.isLoggedIn ? '/playlists' : '/login';
+      final path = app.spotify.isLoggedIn ? '/party' : '/login';
       final transitionDuration = app.spotify.isLoggedIn
           ? new Duration(seconds: 0)
           : new Duration(milliseconds: 750);

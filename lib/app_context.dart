@@ -23,7 +23,7 @@ class AppContext {
       this.user = user;
 
       final route = app.router.matchRoute(
-        context, '/playlists',
+        context, '/party',
         transitionType: TransitionType.fadeIn,
       ).route;
       Navigator.pushReplacement(context, route);
