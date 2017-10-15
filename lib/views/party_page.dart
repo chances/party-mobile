@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 
 import 'package:party/app_context.dart';
 import 'package:party/constants.dart';
+import 'package:party/views/widgets/primary_button.dart';
 
 class PartyPage extends StatefulWidget {
   PartyPage({Key key}) : super(key: key);
@@ -26,6 +27,13 @@ class _PartyPageState extends State<PartyPage> {
     return null;
   }
 
+  void _selectPlaylist() {
+    Navigator.of(context).pushNamed('/playlists')
+        .then((_) {
+
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     final actions = [
@@ -40,7 +48,11 @@ class _PartyPageState extends State<PartyPage> {
         elevation: 4.0,
       ),
       bottomNavigationBar: Constants.footer,
-      body: new Center(child: Constants.loading),
+      body: new Center(
+          child: new PrimaryButton(
+              'Select Playlist', onPressed: _selectPlaylist
+          )
+      ),
     );
   }
 }
