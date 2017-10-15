@@ -10,7 +10,6 @@ import 'package:party/models/interop/message.dart';
 import 'package:party/models/interop/set_access_token_state.dart';
 import 'package:party/views/widgets/rounded_button.dart';
 
-
 class LoginPage extends StatefulWidget {
   LoginPage({Key key}) : super(key: key);
 
@@ -36,13 +35,7 @@ class _LoginPageState extends State<LoginPage> {
       if (SetAccessTokenStateMessage.instanceOf(m)) {
         SetAccessTokenStateMessage setToken = new SetAccessTokenStateMessage(m);
 
-        app.spotify.setToken(setToken.accessToken, setToken.expiresAt);
-
-        final route = app.router.matchRoute(
-          context, '/playlists',
-          transitionType: TransitionType.fadeIn,
-        ).route;
-        Navigator.pushReplacement(context, route);
+        app.login(context, setToken);
       }
     });
   }
