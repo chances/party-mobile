@@ -1,46 +1,13 @@
-import 'package:fluro/fluro.dart';
 import 'package:flutter/material.dart';
 
 import 'package:party/app_context.dart';
-import 'package:party/constants.dart';
 import 'package:party/theme.dart';
 import 'package:party/views/login_page.dart';
 import 'package:party/views/playlists_page.dart';
+import 'package:party/views/startup_page.dart';
 
 void main() {
-  // TODO: Add an app init '/' route, load stored config (SharedPrefs)
-  app.router.define("/", handler: new Handler(
-    handlerFunc: (BuildContext context, Map<String, dynamic> params) {
-      app.spotify.loadFromPrefsAndValidateSession().then((user) {
-        app.user = user;
-        final path = app.spotify.loggedIn ? '/playlists' : '/login';
-
-        final route = app.router.matchRoute(
-            context, path,
-            transitionType: TransitionType.fadeIn
-        ).route;
-        Navigator.pushReplacement(context, route);
-      });
-
-      return new Stack(children: [
-        new Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              new Padding(
-                padding: new EdgeInsets.only(top: 16.0),
-                child: new Image.asset(
-                  'images/party_logo.png',
-                  width: 300.0,
-                ),
-              ),
-            ]
-        ),
-        new Center(child: new CircularProgressIndicator(
-          valueColor: Constants.loadingColorAnimation,
-        ))
-      ]);
-    }
-  ));
+  app.router.define("/", handler: StartupPage.handler);
   app.router.define("/login", handler: LoginPage.handler);
   app.router.define("/playlists", handler: PlaylistsPage.handler);
   app.router.printTree();
@@ -54,7 +21,6 @@ class PartyApp extends StatelessWidget {
     return new MaterialApp(
       title: 'Party',
       theme: partyTheme,
-//      initialRoute: '/login',
       onGenerateRoute: app.router.generator,
     );
   }
