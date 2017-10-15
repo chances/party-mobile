@@ -30,16 +30,17 @@ class _StartupPageState extends State<StartupPage> {
         _loading = false;
       });
 
-      return new Future.delayed(new Duration(milliseconds: 500), () {});
+      return new Future.delayed(new Duration(milliseconds: 400), () {});
     }).then((_) {
-      final path = app.spotify.loggedIn ? '/playlists' : '/login';
-      final transition = app.spotify.loggedIn
-          ? TransitionType.native
-          : TransitionType.fadeIn;
+      final path = app.spotify.isLoggedIn ? '/playlists' : '/login';
+      final transitionDuration = app.spotify.isLoggedIn
+          ? new Duration(seconds: 0)
+          : new Duration(milliseconds: 750);
 
       final route = app.router.matchRoute(
         context, path,
-        transitionType: transition,
+        transitionType: TransitionType.fadeIn,
+        transitionDuration: transitionDuration
       ).route;
       Navigator.pushReplacement(context, route);
     });
@@ -50,12 +51,17 @@ class _StartupPageState extends State<StartupPage> {
     return new FutureBuilder<Null>(
         future: _loadUser,
         builder: (BuildContext context, AsyncSnapshot<Null> snapshot) {
-          return new Stack(children: [
-            // TODO: Animate logo from position in launch background
-            new AnimatedOpacity(
-                opacity: _loading ? 1.0 : 0.0,
-                duration: new Duration(milliseconds: 400),
-                child: new Row(
+          double logoOpacity = 1.0;
+          if (!_loading && app.spotify.isLoggedIn) {
+            logoOpacity = 0.0;
+          }
+
+          return new AnimatedOpacity(
+              opacity: logoOpacity,
+              duration: new Duration(milliseconds: 300),
+              child: new Stack(children: [
+                // TODO: Animate logo from position in launch background
+                new Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
                       new Padding(
@@ -66,12 +72,12 @@ class _StartupPageState extends State<StartupPage> {
                         ),
                       ),
                     ]
-                )
-            ),
-            new Center(child: new CircularProgressIndicator(
-              valueColor: Constants.loadingColorAnimation,
-            ))
-          ]);
+                ),
+                new Center(child: new CircularProgressIndicator(
+                  valueColor: Constants.loadingColorAnimation,
+                ))
+              ])
+          );
         }
     );
   }
