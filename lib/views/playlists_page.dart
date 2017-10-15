@@ -25,12 +25,12 @@ class PlaylistsPage extends StatefulWidget {
 
 class _PlaylistsPageState extends State<PlaylistsPage> {
   bool _loading = true;
-
   bool _forceLoad = false;
+
   Future<Iterable<PlaylistSimple>> get _loadPlaylists {
     if (app.playlists.length == 0 || _forceLoad) {
       _forceLoad = false;
-      var futurePlaylists = app.spotify.client.playlists.me();
+      var futurePlaylists = app.spotify.client.playlists.me.all();
       return futurePlaylists.then((playlists) {
         setState(() {
           _loading = false;
@@ -47,11 +47,6 @@ class _PlaylistsPageState extends State<PlaylistsPage> {
   @override
   Widget build(BuildContext context) {
     final actions = <Widget>[
-//      new IconButton(
-//        icon: new Icon(Icons.playlist_play),
-//        tooltip: 'Now Playing',
-//        onPressed: null,
-//      ),
       new PopupMenuButton(
         onSelected: (String result) { app.logout(context); },
         itemBuilder: (BuildContext context) => <PopupMenuEntry<String>>[
@@ -62,24 +57,16 @@ class _PlaylistsPageState extends State<PlaylistsPage> {
 
     if (!_loading) {
       actions.insert(0, new IconButton(
-        icon: new Icon(Icons.refresh, color: Constants.colorAccentLight),
+        icon: new Icon(Icons.refresh),
         tooltip: 'Refresh',
         onPressed: () {
           setState(() {
             _forceLoad = true;
+            _loading = true;
           });
         },
       ));
     }
-
-//    if (_playlists.length > 0) {
-//      playlists.add(
-//          new LinearProgressIndicator(
-//            valueColor: Constants.loadingColorAnimation, ,
-//            backgroundColor: Constants.colorPrimary,
-//          )
-//      );
-//    }
 
     return new Scaffold(
         appBar: new AppBar(
@@ -90,36 +77,65 @@ class _PlaylistsPageState extends State<PlaylistsPage> {
         ),
         backgroundColor: Constants.colorPrimaryDark,
         bottomNavigationBar: Constants.footer,
-        body: new FutureBuilder<Iterable<PlaylistSimple>>(
-            future: _loadPlaylists,
-            builder: (BuildContext context, AsyncSnapshot<Iterable<PlaylistSimple>> snapshot) {
-              switch (snapshot.connectionState) {
-                case ConnectionState.none:
-                case ConnectionState.waiting:
-                  return new Column(children: [
-                    new Expanded(child: Constants.loading)
-                  ], crossAxisAlignment: CrossAxisAlignment.stretch);
-                default:
-                  return new Column(children: [
-                    new Expanded(child: new ListView(
-                        children: app.playlists.map((playlist) {
-                          return new ListTile(
-                            leading: new Image.network(
-                              playlistLargestImageUrl(playlist)
-                            ),
-                            title: new Text(playlist.name),
-                            subtitle: new Text(playlistSubtitle(playlist)),
-                          );
-                        }).toList()
-                    ))
-                  ]);
-              }
-            }
-        ),
+        body: buildPlaylistView(context),
     );
   }
 
-  String playlistLargestImageUrl(PlaylistSimple playlist) {
+  Widget buildPlaylistView(BuildContext context) {
+    if (!_loading && app.playlists.isNotEmpty) {
+      return buildPlaylistListView(context);
+    } else if (!_loading && app.playlists.isEmpty) {
+      return buildPlaylistListView(
+          context, 'You have no Spotify playlists'
+      );
+    }
+
+    return new FutureBuilder<Iterable<PlaylistSimple>>(
+        future: _loadPlaylists,
+        builder: (BuildContext context,
+            AsyncSnapshot<Iterable<PlaylistSimple>> snapshot) {
+          switch (snapshot.connectionState) {
+            case ConnectionState.none:
+            case ConnectionState.waiting:
+            case ConnectionState.active:
+              return new Column(children: [
+                new Expanded(child: Constants.loading)
+              ], crossAxisAlignment: CrossAxisAlignment.stretch);
+            default:
+              return buildPlaylistListView(
+                  context,
+                  snapshot.hasError ? snapshot.error : null
+              );
+          }
+        }
+    );
+  }
+
+  Widget buildPlaylistListView(BuildContext context, [Object error]) {
+    var playlistsOrError = error == null
+        ? new ListView(
+        children: app.playlists.map((playlist) {
+          return new ListTile(
+            leading: new Image.network(
+                playlistSuitableImageUrl(playlist)
+            ),
+            title: new Text(playlist.name),
+            subtitle: new Text(playlistSubtitle(playlist)),
+          );
+        }).toList()
+    )
+        : new Text(error);
+
+    return new Column(children: [
+      new Expanded(child: playlistsOrError)
+    ],
+        crossAxisAlignment: error == null
+            ? CrossAxisAlignment.start
+            : CrossAxisAlignment.center
+    );
+  }
+
+  String playlistSuitableImageUrl(PlaylistSimple playlist) {
     var oldWidth = playlist.images.first.width;
     return playlist.images.reduce((prevImg, img) {
       if (img.width > oldWidth && img.width < 1000) {
