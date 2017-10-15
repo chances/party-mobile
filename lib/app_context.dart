@@ -41,7 +41,7 @@ class AppContext {
   }
 
   void logoutIfNecessary(BuildContext context) {
-    if (!app.spotify.loggedIn || app.spotify.isTokenExpired) {
+    if (!app.spotify.isLoggedIn || app.spotify.isTokenExpired) {
       logout(context);
     }
   }

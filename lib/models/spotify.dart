@@ -13,7 +13,7 @@ class Spotify {
   DateTime _tokenExpiry;
   SpotifyApi _client;
 
-  bool get loggedIn => _accessToken != null &&
+  bool get isLoggedIn => _accessToken != null &&
       _tokenExpiry != null && !isTokenExpired;
   String get accessToken => _accessToken;
   DateTime get tokenExpiry => _tokenExpiry;
@@ -21,7 +21,7 @@ class Spotify {
   bool get isTokenExpired => _tokenExpiry.isBefore(new DateTime.now());
 
   SpotifyApi get client {
-    if (!loggedIn || isTokenExpired) {
+    if (!isLoggedIn || isTokenExpired) {
       _client = null;
       return null;
     }
