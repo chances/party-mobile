@@ -27,10 +27,6 @@ class Constants {
       new CircularProgressIndicator(
         valueColor: loadingColorAnimation,
       ),
-      new Container(
-        margin: const EdgeInsets.only(top: 6.0),
-        child: new Text("Loading..."),
-      )
     ],
   );
 
