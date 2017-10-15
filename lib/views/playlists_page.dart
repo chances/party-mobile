@@ -48,13 +48,8 @@ class _PlaylistsPageState extends State<PlaylistsPage> {
 
   @override
   Widget build(BuildContext context) {
-    final actions = <Widget>[
-      new PopupMenuButton(
-        onSelected: (String result) { app.logout(context); },
-        itemBuilder: (BuildContext context) => <PopupMenuEntry<String>>[
-          const PopupMenuItem(value: 'logout', child: const Text('Logout'))
-        ],
-      )
+    final actions = [
+      Constants.logoutMenu(context)
     ];
 
     if (!_loading) {
