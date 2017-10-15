@@ -36,7 +36,9 @@ class _PlaylistsPageState extends State<PlaylistsPage> {
           _loading = false;
         });
         app.playlists.clear();
-        app.playlists.addAll(playlists);
+        app.playlists.addAll(playlists.where((p) {
+          return p.owner.id == app.user.id;
+        }));
         return playlists;
       });
     } else {
