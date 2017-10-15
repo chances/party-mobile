@@ -46,8 +46,7 @@ class Spotify {
   }
 
   void logout() {
-    _accessToken = null;
-    _tokenExpiry = null;
+    setToken(null, null);
   }
 
   Future<User> loadFromPrefsAndValidateSession() {
