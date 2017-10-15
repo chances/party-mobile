@@ -67,7 +67,11 @@ class Spotify {
         }
       } catch (e) {}
 
-      return client.users.me();
+      if (isLoggedIn) {
+        return client.users.me();
+      } else {
+        return null;
+      }
     });
   }
 }
