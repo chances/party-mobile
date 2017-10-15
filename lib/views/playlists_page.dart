@@ -113,26 +113,26 @@ class _PlaylistsPageState extends State<PlaylistsPage> {
 
   Widget buildPlaylistListView(BuildContext context, [Object error]) {
     var playlistsOrError = error == null
-        ? new ListView(
-        children: app.playlists.map((playlist) {
-          return new ListTile(
-            leading: new Image.network(
-                playlistSuitableImageUrl(playlist)
-            ),
-            title: new Text(playlist.name),
-            subtitle: new Text(playlistSubtitle(playlist)),
-          );
-        }).toList()
-    )
-        : new Text(error);
+        ? new Column(children: [
+      new Expanded(child: new ListView(
+          children: app.playlists.map((playlist) {
+            return new ListTile(
+              leading: new Image.network(
+                  playlistSuitableImageUrl(playlist)
+              ),
+              title: new Text(
+                playlist.name,
+                maxLines: 1,
+                overflow: TextOverflow.fade,
+              ),
+              subtitle: new Text(playlistSubtitle(playlist)),
+            );
+          }).toList()
+      ))
+    ])
+        : new Center(child: new Text(error));
 
-    return new Column(children: [
-      new Expanded(child: playlistsOrError)
-    ],
-        crossAxisAlignment: error == null
-            ? CrossAxisAlignment.start
-            : CrossAxisAlignment.center
-    );
+    return playlistsOrError;
   }
 
   String playlistSuitableImageUrl(PlaylistSimple playlist) {
