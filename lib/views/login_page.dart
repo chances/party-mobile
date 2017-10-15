@@ -63,7 +63,6 @@ class _LoginPageState extends State<LoginPage> {
   @override
   Widget build(BuildContext context) {
     return new Scaffold(
-      backgroundColor: Constants.statusBarColor,
       body: new Stack(
         children: [
           new Row(
