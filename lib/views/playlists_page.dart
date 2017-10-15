@@ -77,7 +77,6 @@ class _PlaylistsPageState extends State<PlaylistsPage> {
           backgroundColor: Constants.statusBarColor,
           elevation: 4.0,
         ),
-        backgroundColor: Constants.colorPrimaryDark,
         bottomNavigationBar: Constants.footer,
         body: buildPlaylistView(context),
     );

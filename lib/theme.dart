@@ -5,7 +5,7 @@ import 'package:party/constants.dart';
 final partyTheme = new ThemeData.dark().copyWith(
     primaryColor: Constants.colorPrimary,
     accentColor: Constants.colorAccent,
-    backgroundColor: Constants.colorPrimary,
+    backgroundColor: Constants.colorPrimaryDark,
 
     selectedRowColor: Constants.colorAccentLightControlHighlight,
     dividerColor: Constants.colorAccentControlHighlight,
