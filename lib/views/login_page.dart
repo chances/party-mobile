@@ -8,6 +8,7 @@ import 'package:party/app_context.dart';
 import 'package:party/constants.dart';
 import 'package:party/models/interop/message.dart';
 import 'package:party/models/interop/set_access_token_state.dart';
+import 'package:party/views/widgets/primary_button.dart';
 import 'package:party/views/widgets/rounded_button.dart';
 
 class LoginPage extends StatefulWidget {
@@ -59,21 +60,6 @@ class _LoginPageState extends State<LoginPage> {
     }
   }
 
-  Widget buildLoginButtonOrLoading() {
-    return _loggingIn
-        ? Constants.loading
-        : new RoundedButton(
-        color: Constants.colorAccent,
-        height: 48.0,
-        padding: new EdgeInsets.only(left: 36.0, right: 36.0),
-        onPressed: _login,
-        child: new Text(
-            'Login with Spotify',
-            style: Constants.typography.white.button
-        )
-    );
-  }
-
   @override
   Widget build(BuildContext context) {
     return new Scaffold(
@@ -92,7 +78,11 @@ class _LoginPageState extends State<LoginPage> {
               ),
             ],
           ),
-          new Center(child: buildLoginButtonOrLoading()),
+          new Center(
+              child: _loggingIn
+                  ? Constants.loading
+                  : new PrimaryButton('Login with Spotify', onPressed: _login)
+          ),
           new Positioned(
             bottom: 0.0,
             left: 0.0,
