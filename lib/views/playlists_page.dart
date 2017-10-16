@@ -23,7 +23,7 @@ class PlaylistsPage extends StatefulWidget {
 }
 
 class _PlaylistsPageState extends State<PlaylistsPage> {
-  bool _loading = true;
+  bool _loading = app.playlists.isEmpty;
   bool _forceLoad = false;
 
   Future<Iterable<PlaylistSimple>> get _loadPlaylists {
