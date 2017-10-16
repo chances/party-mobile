@@ -46,27 +46,34 @@ class _PartyPageState extends State<PartyPage> {
 
   @override
   Widget build(BuildContext context) {
+    var content = app.hasParty
+        ? buildSelectPlaylist(context)
+        : buildStartParty(context);
+
     return new Scaffold(
       appBar: searchBar.build(context),
       bottomNavigationBar: Constants.footer,
-      body: new Stack(children: buildStartParty(context)),
+      body: new Stack(children: content),
     );
   }
 
   AppBar buildAppBar(BuildContext context) {
     final actions = [
-      new IconButton(
+      Constants.logoutMenu(context)
+    ];
+
+    if (app.hasParty) {
+      actions.insert(0, new IconButton(
         icon: new Icon(Icons.add),
         tooltip: 'Add a song',
         onPressed: () {
           searchBar.beginSearch(context);
         },
-      ),
-      Constants.logoutMenu(context)
-    ];
+      ));
+    }
 
     return new AppBar(
-      title: new Text("Your Party"),
+      title: new Text(app.hasParty ? 'Your Party' : 'Start a Party'),
       backgroundColor: Constants.statusBarColor,
       elevation: 4.0,
       actions: actions,
