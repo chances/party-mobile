@@ -74,6 +74,12 @@ class _PartyPageState extends State<PartyPage> {
     );
   }
 
+  List<Widget> buildLoading(BuildContext context) {
+    return [
+      new Center(child: Constants.loading)
+    ];
+  }
+
   List<Widget> buildStartParty(BuildContext context) {
     return [
       new Center(
@@ -89,6 +95,33 @@ class _PartyPageState extends State<PartyPage> {
                 ]),
               ),
               new PrimaryButton('Start', onPressed: _selectPlaylist)
+            ],
+            mainAxisAlignment: MainAxisAlignment.center,
+            crossAxisAlignment: CrossAxisAlignment.center,
+          )
+      )
+    ];
+  }
+
+  List<Widget> buildSelectPlaylist(BuildContext context) {
+    return [
+      new Center(
+          child: new Column(
+            children: [
+              new Padding(
+                padding: new EdgeInsets.only(bottom: 16.0),
+                child: new Column(children: [
+                  new Text(
+                    'Play your favorite playlist',
+                    style: Theme.of(context).textTheme.headline,
+                  ),
+//                  new Text(
+//                    '',
+//                    style: Theme.of(context).textTheme.body1,
+//                  )
+                ]),
+              ),
+              new PrimaryButton('Select Playlist', onPressed: _selectPlaylist)
             ],
             mainAxisAlignment: MainAxisAlignment.center,
             crossAxisAlignment: CrossAxisAlignment.center,
