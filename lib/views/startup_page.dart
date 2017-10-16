@@ -26,7 +26,7 @@ class _StartupPageState extends State<StartupPage> {
     return app.spotify.loadAndValidateSession().then(
             (isLoggedIn) {
               return isLoggedIn
-                ? app.spotify.client(context).users.me()
+                  ? app.spotify.client(context).users.me()
                   : null;
             }
     ).then((user) {
