@@ -12,8 +12,7 @@ class PlaylistsPage extends StatefulWidget {
 
   static final handler = new Handler(
       handlerFunc: (BuildContext context, Map<String, dynamic> params) {
-        // TODO: Figure out how to properly logout if necessary
-//        app.logoutIfNecessary(context);
+        app.logoutIfNecessary(context);
         
         return new PlaylistsPage();
       }
@@ -30,7 +29,7 @@ class _PlaylistsPageState extends State<PlaylistsPage> {
   Future<Iterable<PlaylistSimple>> get _loadPlaylists {
     if (app.playlists.length == 0 || _forceLoad) {
       _forceLoad = false;
-      var futurePlaylists = app.spotify.client.playlists.me.all();
+      var futurePlaylists = app.spotify.client(context).playlists.me.all();
       return futurePlaylists.then((playlists) {
         setState(() {
           _loading = false;

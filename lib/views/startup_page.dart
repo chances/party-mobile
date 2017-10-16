@@ -23,7 +23,13 @@ class _StartupPageState extends State<StartupPage> {
   bool _loading = true;
 
   Future<Null> get _loadUser {
-    return app.spotify.loadFromPrefsAndValidateSession().then((user) {
+    return app.spotify.loadAndValidateSession().then(
+            (isLoggedIn) {
+              return isLoggedIn
+                ? app.spotify.client(context).users.me()
+                  : null;
+            }
+    ).then((user) {
       app.user = user;
       setState(() {
         _loading = false;

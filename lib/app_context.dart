@@ -2,10 +2,10 @@ import 'dart:async';
 
 import 'package:fluro/fluro.dart';
 import 'package:flutter/widgets.dart';
-import 'package:party/models/interop/set_access_token_state.dart';
-
-import 'package:party/models/spotify.dart';
 import 'package:spotify/spotify_io.dart';
+
+import 'package:party/models/interop/set_access_token_state.dart';
+import 'package:party/models/spotify.dart';
 
 final app = new AppContext();
 
@@ -16,10 +16,18 @@ class AppContext {
   User user;
   var playlists = <PlaylistSimple>[];
 
+  AppContext() {
+    spotify.onLogout = (BuildContext context, bool wasAutomatic) {
+      if (wasAutomatic) {
+        logout(context);
+      }
+    };
+  }
+
   void login(BuildContext context, SetAccessTokenStateMessage setToken) {
     app.spotify.setToken(setToken.accessToken, setToken.expiresAt);
 
-    app.spotify.client.users.me().then((user) {
+    app.spotify.client(context).users.me().then((user) {
       this.user = user;
 
       final route = app.router.matchRoute(
@@ -31,23 +39,28 @@ class AppContext {
   }
 
   void logout(BuildContext context) {
-    spotify.logout();
+    if (spotify.isLoggedIn) {
+      spotify.logout(context);
+    }
 
-    _navigateToLoginPage(context)
-        .asStream().asBroadcastStream().listen((_) {
+    new Future.value(Navigator.of(context).canPop())
+        .then((canPop) => _navigateToLoginPage(context, canPop))
+        .then((_) {
       user = null;
       playlists = <PlaylistSimple>[];
     });
   }
 
   void logoutIfNecessary(BuildContext context) {
-    if (!app.spotify.isLoggedIn || app.spotify.isTokenExpired) {
+    if (!app.spotify.isLoggedIn) {
       logout(context);
     }
   }
 
-  Future _navigateToLoginPage(BuildContext context) {
-    Navigator.popUntil(context, (Route route) => route.isFirst);
+  Future<bool> _navigateToLoginPage(BuildContext context, bool popRoutes) {
+    if (popRoutes) {
+      Navigator.popUntil(context, (Route route) => route.isFirst);
+    }
 
     final route = app.router.matchRoute(
         context, '/login',

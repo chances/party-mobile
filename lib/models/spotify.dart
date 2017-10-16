@@ -1,7 +1,10 @@
 import 'dart:async';
 
+import 'package:flutter/widgets.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:spotify/spotify_io.dart';
+
+typedef LogoutCallback(BuildContext context, bool wasAutomatic);
 
 class Spotify {
   static final Spotify _instance = new Spotify._createInstance();
@@ -9,9 +12,12 @@ class Spotify {
 
   static Spotify getInstance() => Spotify._instance;
 
+  LogoutCallback onLogout;
+
   String _accessToken;
   DateTime _tokenExpiry;
   SpotifyApi _client;
+  bool _loggedOutAutomatically = false;
 
   bool get isLoggedIn => _accessToken != null &&
       _tokenExpiry != null && !isTokenExpired;
@@ -20,9 +26,11 @@ class Spotify {
   int get expiresIn => tokenExpiry.difference(new DateTime.now()).inSeconds;
   bool get isTokenExpired => _tokenExpiry.isBefore(new DateTime.now());
 
-  SpotifyApi get client {
-    if (!isLoggedIn || isTokenExpired) {
+  SpotifyApi client(BuildContext context) {
+    if (!isLoggedIn) {
       _client = null;
+      _loggedOutAutomatically = true;
+      logout(context);
       return null;
     }
     if (_client == null) {
@@ -45,11 +53,15 @@ class Spotify {
     });
   }
 
-  void logout() {
+  void logout(BuildContext context) {
     setToken(null, null);
+    if (onLogout != null) {
+      onLogout(context, _loggedOutAutomatically);
+    }
+    _loggedOutAutomatically = false;
   }
 
-  Future<User> loadFromPrefsAndValidateSession() {
+  Future<bool> loadAndValidateSession() {
     return SharedPreferences.getInstance().then((prefs) {
       try {
         final accessToken = prefs.getString('SPOTIFY_ACCESS_TOKEN');
@@ -61,17 +73,14 @@ class Spotify {
           _tokenExpiry = DateTime.parse(tokenExpiryString);
 
           if (isTokenExpired) {
-            logout();
-            return null;
+            setToken(null, null);
           }
         }
-      } catch (e) {}
-
-      if (isLoggedIn) {
-        return client.users.me();
-      } else {
-        return null;
+      } catch (e) {
+        setToken(null, null);
       }
+
+      return isLoggedIn;
     });
   }
 }
