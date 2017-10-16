@@ -6,6 +6,7 @@ dependencies:
     git:
       url: git://github.com/chances/spotify-dart.git
       ref: party
+  owl: '>=0.2.1 <0.3.0'
   fluro: ^1.1.0
   shared_preferences: ^0.2.5
   flutter:
@@ -15,6 +16,9 @@ dev_dependencies:
   flutter_test:
     sdk: flutter
 
+# Owl codegen snippet:
+# $ pub activate global owl_codegen '>=0.2.1+2 <0.3.0'
+# $ flutter packages pub global run owl_codegen:main -t json -p party -g 'lib/models/**/*.dart,lib/models/*.dart'
 
 # For information on the generic Dart part of this file, see the
 # following page: https://www.dartlang.org/tools/pub/pubspec
