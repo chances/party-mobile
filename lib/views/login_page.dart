@@ -9,7 +9,6 @@ import 'package:party/constants.dart';
 import 'package:party/models/interop/message.dart';
 import 'package:party/models/interop/set_access_token_state.dart';
 import 'package:party/views/widgets/primary_button.dart';
-import 'package:party/views/widgets/rounded_button.dart';
 
 class LoginPage extends StatefulWidget {
   LoginPage({Key key}) : super(key: key);
