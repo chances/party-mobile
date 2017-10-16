@@ -47,7 +47,7 @@ class _LoginPageState extends State<LoginPage> {
       });
       await platform.invokeMethod('login');
     } on PlatformException catch (e) {
-      app.spotify.logout();
+      app.spotify.logout(context);
 
       setState(() {
         _loggingIn = false;
