@@ -5,6 +5,7 @@ import 'package:flutter/widgets.dart';
 import 'package:spotify/spotify_io.dart';
 
 import 'package:party/models/interop/set_access_token_state.dart';
+import 'package:party/models/party.dart';
 import 'package:party/models/spotify.dart';
 
 final app = new AppContext();
@@ -14,7 +15,10 @@ class AppContext {
   final router = new Router();
 
   User user;
+  Party party;
   var playlists = <PlaylistSimple>[];
+
+  bool get hasParty => party != null;
 
   AppContext() {
     spotify.onLogout = (BuildContext context, bool wasAutomatic) {
@@ -47,7 +51,8 @@ class AppContext {
         .then((canPop) => _navigateToLoginPage(context, canPop))
         .then((_) {
       user = null;
-      playlists = <PlaylistSimple>[];
+      party = null;
+      playlists.clear();
     });
   }
 
