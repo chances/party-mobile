@@ -27,6 +27,7 @@ class _LoginPageState extends State<LoginPage> {
   static const platform = const MethodChannel('com.chancesnow.party/spotify');
   BasicMessageChannel<Message> channel;
 
+  var _attemptingLogin = false;
   var _loggingIn = false;
 
   _LoginPageState() {
@@ -34,6 +35,11 @@ class _LoginPageState extends State<LoginPage> {
     channel.setMessageHandler((Message m) {
       if (SetAccessTokenStateMessage.instanceOf(m)) {
         SetAccessTokenStateMessage setToken = new SetAccessTokenStateMessage(m);
+
+        setState(() {
+          _attemptingLogin = false;
+          _loggingIn = true;
+        });
 
         app.login(context, setToken);
       }
@@ -43,13 +49,14 @@ class _LoginPageState extends State<LoginPage> {
   Future<Null> _login() async {
     try {
       setState(() {
-        _loggingIn = true;
+        _attemptingLogin = true;
       });
       await platform.invokeMethod('login');
     } on PlatformException catch (e) {
       app.spotify.logout(context);
 
       setState(() {
+        _attemptingLogin = false;
         _loggingIn = false;
       });
 
@@ -77,8 +84,8 @@ class _LoginPageState extends State<LoginPage> {
             ],
           ),
           new Center(
-              child: _loggingIn
-                  ? Constants.loading
+              child: _attemptingLogin || _loggingIn
+                  ? _attemptingLogin ? null : Constants.loading
                   : new PrimaryButton('Login with Spotify', onPressed: _login)
           ),
           new Positioned(
