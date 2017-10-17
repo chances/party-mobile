@@ -45,7 +45,7 @@ class Spotify {
     _accessToken = accessToken;
     _tokenExpiry = tokenExpiry;
 
-    if (_client != null) {
+    if (isLoggedIn && _client != null) {
       // TODO: Add update token call to spotify-dart?
       _client = new SpotifyApi(SpotifyApiCredentials.implicitGrant(
           accessToken, expiresIn
