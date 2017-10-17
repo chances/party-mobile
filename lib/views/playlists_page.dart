@@ -97,7 +97,7 @@ class _PlaylistsPageState extends State<PlaylistsPage> {
               )
           ),
         ),
-        bottomNavigationBar: Constants.footer,
+        bottomNavigationBar: Constants.footer(context),
         body: buildPlaylistView(context),
     );
   }

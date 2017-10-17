@@ -32,23 +32,44 @@ class Constants {
     ],
   );
 
-  static final Widget footer = new Padding(
-      padding: new EdgeInsets.only(top: 8.0, bottom: 8.0),
-      child: new Row(
-          mainAxisAlignment: MainAxisAlignment.center,
-          crossAxisAlignment: CrossAxisAlignment.center,
-          children: [
-            new Padding(
-              padding: new EdgeInsets.only(right: 10.0),
-              child: new Text("Powered by"),
-            ),
-            new Image.asset(
-              "images/spotify_logo_white.png",
-              height: 37.0,
-            ),
-          ]
-      )
+  static final Duration footerAnimationDuration = new Duration(
+      milliseconds: 350
   );
+
+  static Widget footer(BuildContext context, [double opacity = 1.0]) {
+    var theme = Theme.of(context);
+    var textStyle = theme.textTheme.body1
+        .copyWith(decoration: TextDecoration.none);
+
+    return new Hero(
+        tag: 'spotify-power',
+        child: new AnimatedOpacity(
+          opacity: opacity,
+          duration: footerAnimationDuration,
+          child: new Container(
+              padding: new EdgeInsets.only(top: 8.0, bottom: 8.0),
+              color: theme.scaffoldBackgroundColor,
+              child: new Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                    new Padding(
+                      padding: new EdgeInsets.only(right: 10.0),
+                      child: new Text(
+                        'Powered by',
+                        style: textStyle,
+                      ),
+                    ),
+                    new Image.asset(
+                      'images/spotify_logo_white.png',
+                      height: 37.0,
+                    ),
+                  ]
+              )
+          ),
+        )
+    );
+  }
 
   static Widget logoutMenu(BuildContext context) {
     return new PopupMenuButton(

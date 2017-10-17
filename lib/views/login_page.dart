@@ -92,7 +92,7 @@ class _LoginPageState extends State<LoginPage> {
             bottom: 0.0,
             left: 0.0,
             right: 0.0,
-            child: Constants.footer,
+            child: Constants.footer(context),
           ),
         ],
       ),

@@ -52,7 +52,6 @@ class _PartyPageState extends State<PartyPage> {
 
     return new Scaffold(
       appBar: searchBar.build(context),
-      bottomNavigationBar: Constants.footer,
       body: new Stack(children: content),
     );
   }
@@ -133,7 +132,8 @@ class _PartyPageState extends State<PartyPage> {
             mainAxisAlignment: MainAxisAlignment.center,
             crossAxisAlignment: CrossAxisAlignment.center,
           )
-      )
+      ),
+      Constants.footer(context)
     ];
   }
 }
