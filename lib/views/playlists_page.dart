@@ -136,19 +136,22 @@ class _PlaylistsPageState extends State<PlaylistsPage> {
     var playlistsOrError = error == null
         ? new Column(children: [
       new Expanded(child: new ListView(
-          children: app.playlists.map((playlist) {
-            return new ListTile(
-              leading: new Image.network(
-                  playlistSuitableImageUrl(playlist)
-              ),
-              title: new Text(
-                playlist.name,
-                maxLines: 1,
-                overflow: TextOverflow.fade,
-              ),
-              subtitle: new Text(playlistSubtitle(playlist)),
-            );
-          }).toList()
+          children: ListTile.divideTiles(
+              context: context,
+              tiles: app.playlists.map((playlist) {
+                return new ListTile(
+                  leading: new Image.network(
+                      playlistSuitableImageUrl(playlist)
+                  ),
+                  title: new Text(
+                    playlist.name,
+                    maxLines: 1,
+                    overflow: TextOverflow.fade,
+                  ),
+                  subtitle: new Text(playlistSubtitle(playlist)),
+                );
+              }).toList()
+          ).toList()
       ))
     ])
         : new Center(child: new Text(error));
