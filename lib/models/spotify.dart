@@ -45,6 +45,13 @@ class Spotify {
     _accessToken = accessToken;
     _tokenExpiry = tokenExpiry;
 
+    if (_client != null) {
+      // TODO: Add update token call to spotify-dart?
+      _client = new SpotifyApi(SpotifyApiCredentials.implicitGrant(
+          accessToken, expiresIn
+      ));
+    }
+
     SharedPreferences.getInstance().then((prefs) {
       prefs.setString('SPOTIFY_ACCESS_TOKEN', _accessToken);
       prefs.setString('SPOTIFY_TOKEN_EXPIRY', _tokenExpiry?.toIso8601String());
