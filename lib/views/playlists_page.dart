@@ -64,12 +64,38 @@ class _PlaylistsPageState extends State<PlaylistsPage> {
       ));
     }
 
+    final media = MediaQuery.of(context);
+
+    final bottomHelperText = app.hasParty
+        ? 'Pick one to mix into the queue'
+        : 'Pick one to play during the party';
+    final bottomHelperTextStyle = Theme.of(context).textTheme.body1;
+    final bottomHelper = new Text(
+      bottomHelperText,
+      style: bottomHelperTextStyle,
+    );
+
     return new Scaffold(
         appBar: new AppBar(
           title: new Text("Your Playlists"),
           actions: actions,
           backgroundColor: Constants.statusBarColor,
           elevation: 4.0,
+          bottom: new PreferredSize(
+              child: new Container(
+                padding: new EdgeInsets.only(
+                  bottom: 16.0,
+                  left: 72.0,
+                ),
+                width: media.size.width,
+                alignment: Alignment.topLeft,
+                child: bottomHelper,
+              ),
+              preferredSize: new Size(
+                  media.size.width,
+                  bottomHelperTextStyle.fontSize + 16.0
+              )
+          ),
         ),
         bottomNavigationBar: Constants.footer,
         body: buildPlaylistView(context),
