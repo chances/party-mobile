@@ -32,6 +32,7 @@ class Constants {
     ],
   );
 
+  static final double footerHeight = 53.0;
 
   static Widget footer(BuildContext context, [double opacity = 1.0]) {
     var theme = Theme.of(context);

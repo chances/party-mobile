@@ -21,9 +21,15 @@ class PartyPage extends StatefulWidget {
   _PartyPageState createState() => new _PartyPageState();
 }
 
+enum PartyTab {
+  music,
+  guests,
+  games,
+}
+
 class _PartyPageState extends State<PartyPage> {
   SearchBar searchBar;
-  bool _loading = true;
+  PartyTab _selectedTab = PartyTab.music;
 
   _PartyPageState() {
     searchBar = new SearchBar(
@@ -50,9 +56,33 @@ class _PartyPageState extends State<PartyPage> {
         ? buildSelectPlaylist(context)
         : buildStartParty(context);
 
+    final BottomNavigationBar bottomNavBar = app.hasParty
+        ? new BottomNavigationBar(onTap: (index) {
+          setState(() {
+            _selectedTab = PartyTab.values[index];
+          });
+        },
+        currentIndex: _selectedTab.index,
+        items: [
+          new BottomNavigationBarItem(
+              icon: new Icon(Icons.music_note),
+              title: new Text('Music')
+          ),
+          new BottomNavigationBarItem(
+              icon: new Icon(Icons.people),
+              title: new Text('Guests')
+          ),
+          new BottomNavigationBarItem(
+              icon: new Icon(Icons.videogame_asset),
+              title: new Text('Games')
+          )
+        ])
+        : null;
+
     return new Scaffold(
       appBar: searchBar.build(context),
       body: new Stack(children: content),
+      bottomNavigationBar: bottomNavBar,
     );
   }
 
@@ -76,7 +106,6 @@ class _PartyPageState extends State<PartyPage> {
       backgroundColor: Constants.statusBarColor,
       elevation: 4.0,
       actions: actions,
-      bottom: null, // TODO: Tab switcher; 'Music', 'Guests', 'Games'
     );
   }
 
@@ -133,7 +162,18 @@ class _PartyPageState extends State<PartyPage> {
             crossAxisAlignment: CrossAxisAlignment.center,
           )
       ),
-      Constants.footer(context)
+      new AnimatedPositioned(
+          bottom: _selectedTab == PartyTab.music
+              ? 0.0
+              : 0.0 - (Constants.footerHeight * 3),
+          left: 0.0,
+          right: 0.0,
+          curve: _selectedTab == PartyTab.music
+              ? Curves.easeOut
+              : Curves.easeIn,
+          child: Constants.footer(context),
+          duration: new Duration(milliseconds: 400)
+      )
     ];
   }
 }
