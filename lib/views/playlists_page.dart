@@ -157,15 +157,9 @@ class _PlaylistsPageState extends State<PlaylistsPage> {
   }
 
   String playlistSuitableImageUrl(PlaylistSimple playlist) {
-    var oldWidth = playlist.images.first.width;
-    return playlist.images.reduce((prevImg, img) {
-      if (img.width > oldWidth && img.width < 1000) {
-        oldWidth = img.width;
-        return img;
-      } else {
-        return prevImg;
-      }
-    }).url;
+    return playlist.images
+        .where((img) => img.width < 500).first
+        .url;
   }
 
   String playlistSubtitle(PlaylistSimple playlist) {
