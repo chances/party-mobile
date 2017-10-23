@@ -8,6 +8,9 @@ final partyTheme = new ThemeData.dark().copyWith(
     backgroundColor: Constants.colorPrimary,
     scaffoldBackgroundColor: Constants.colorPrimaryDark,
 
+    buttonColor: Constants.colorAccentLightControl,
+    highlightColor: Constants.colorAccentLightControlHighlight,
+
     selectedRowColor: Constants.colorAccentLightControlHighlight,
     dividerColor: Constants.colorAccentControlHighlight,
 
