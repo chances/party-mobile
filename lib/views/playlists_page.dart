@@ -140,9 +140,7 @@ class _PlaylistsPageState extends State<PlaylistsPage> {
               context: context,
               tiles: app.playlists.map((playlist) {
                 return new ListTile(
-                  leading: new Image.network(
-                      playlistSuitableImageUrl(playlist)
-                  ),
+                  leading: playlistSuitableImage(playlist),
                   title: new Text(
                     playlist.name,
                     maxLines: 1,
@@ -159,10 +157,16 @@ class _PlaylistsPageState extends State<PlaylistsPage> {
     return playlistsOrError;
   }
 
-  String playlistSuitableImageUrl(PlaylistSimple playlist) {
-    return playlist.images
-        .where((img) => img.width < 500).first
-        .url;
+  Widget playlistSuitableImage(PlaylistSimple playlist) {
+    var images = playlist.images.where((img) => img.width < 500);
+    return images.isEmpty
+      ? new Center(
+        child: new Icon(
+            Icons.music_note,
+            color: Constants.colorAccentLightControl
+        ),
+      )
+      : new Image.network(images.first.url);
   }
 
   String playlistSubtitle(PlaylistSimple playlist) {
