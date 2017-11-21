@@ -64,15 +64,19 @@ class Constants {
     );
   }
 
-  static Widget logoutMenu(BuildContext context) {
+  static Widget logoutMenu(BuildContext context, [List<PopupMenuEntry<String>> otherItems]) {
     return new PopupMenuButton(
       onSelected: (String result) {
+        // TODO: Add confirm dialog
         app.logout(context);
       },
-      itemBuilder: (BuildContext context) =>
-      <PopupMenuEntry<String>>[
-        const PopupMenuItem(value: 'logout', child: const Text('Logout'))
-      ],
+      itemBuilder: (BuildContext context) {
+        var items = otherItems == null ? <PopupMenuEntry<String>>[] : otherItems;
+        items.addAll(<PopupMenuEntry<String>>[
+          const PopupMenuItem(value: 'logout', child: const Text('Logout'))
+        ]);
+        return items;
+      },
     );
   }
 

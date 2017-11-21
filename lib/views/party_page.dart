@@ -95,7 +95,10 @@ class _PartyPageState extends State<PartyPage> {
 
   AppBar buildAppBar(BuildContext context) {
     final actions = [
-      Constants.logoutMenu(context)
+      Constants.logoutMenu(context, <PopupMenuEntry<String>>[
+        const PopupMenuItem(value: 'end', child: const Text('End Party')),
+        const PopupMenuDivider(),
+      ])
     ];
 
     if (app.hasParty) {

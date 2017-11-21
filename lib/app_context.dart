@@ -100,6 +100,12 @@ class AppContext {
     }
   }
 
+  Future endParty() async {
+    party = null;
+
+    // TODO: Call api /party/end
+  }
+
   Future<bool> _navigateToLoginPage(BuildContext context, bool popRoutes) {
     if (popRoutes) {
       Navigator.popUntil(context, (Route route) => route.isFirst);
