@@ -65,6 +65,7 @@ class AppContext {
 
     var user = await app.spotify.client(context).users.me();
     this.user = user;
+    this.party = await app.api.party.get();
 
     final route = app.router.matchRoute(
       context, '/party',
