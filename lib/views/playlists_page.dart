@@ -147,6 +147,9 @@ class _PlaylistsPageState extends State<PlaylistsPage> {
                     overflow: TextOverflow.fade,
                   ),
                   subtitle: new Text(playlistSubtitle(playlist)),
+                  onTap: () {
+                    Navigator.of(context).pop(playlist);
+                  },
                 );
               }).toList()
           ).toList()

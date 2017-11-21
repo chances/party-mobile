@@ -3,6 +3,8 @@ import 'dart:async';
 import 'package:fluro/fluro.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_search_bar/flutter_search_bar.dart';
+import 'package:party/views/playlists_page.dart';
+import 'package:spotify/spotify_io.dart';
 
 import 'package:party/app_context.dart';
 import 'package:party/constants.dart';
@@ -44,9 +46,14 @@ class _PartyPageState extends State<PartyPage> {
   }
 
   void _selectPlaylist() {
-    Navigator.of(context).pushNamed('/playlists')
-        .then((_) {
+    // TODO: Refactor this elsewhere
+    Navigator.of(context)
+        .push(new MaterialPageRoute<PlaylistSimple>(builder: (BuildContext context) {
+          return PlaylistsPage.handler.handlerFunc(context, null);
+    })).then((PlaylistSimple playlist) {
+      if (playlist == null) return;
 
+      // TODO: Call server /party/start (w/ host's name and playlist ID)
     });
   }
 
