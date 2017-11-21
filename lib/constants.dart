@@ -76,7 +76,13 @@ class Constants {
     );
   }
 
+  // API & Authentication
+  static const String partyApi = "http://10.0.0.20:3005";
+//  static const String partyApi = "https://party.chancesnow.me";
+
   // Interop
+  static const String mainChannel = "com.chancesnow.party";
+  static const String mainMessageChannel = "com.chancesnow.party/messages";
   static const String spotifyChannel = "com.chancesnow.party/spotify";
   static const String spotifyMessageChannel =
       "com.chancesnow.party/spotify/messages";

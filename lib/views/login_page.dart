@@ -8,6 +8,7 @@ import 'package:party/app_context.dart';
 import 'package:party/constants.dart';
 import 'package:party/models/interop/message.dart';
 import 'package:party/models/interop/set_access_token_state.dart';
+import 'package:party/oauth_view.dart';
 import 'package:party/views/widgets/primary_button.dart';
 
 class LoginPage extends StatefulWidget {
@@ -24,7 +25,7 @@ class LoginPage extends StatefulWidget {
 }
 
 class _LoginPageState extends State<LoginPage> {
-  static const platform = const MethodChannel('com.chancesnow.party/spotify');
+  static const platform = const MethodChannel('com.chancesnow.party');
   BasicMessageChannel<Message> channel;
 
   var _attemptingLogin = false;
@@ -33,16 +34,7 @@ class _LoginPageState extends State<LoginPage> {
   _LoginPageState() {
     channel =  new BasicMessageChannel<Message>(Constants.spotifyMessageChannel, Message.codec);
     channel.setMessageHandler((Message m) {
-      if (SetAccessTokenStateMessage.instanceOf(m)) {
-        SetAccessTokenStateMessage setToken = new SetAccessTokenStateMessage(m);
-
-        setState(() {
-          _attemptingLogin = false;
-          _loggingIn = true;
-        });
-
-        app.login(context, setToken);
-      }
+      // TODO: Use the spotify message channel for player messages
     });
   }
 
@@ -51,7 +43,40 @@ class _LoginPageState extends State<LoginPage> {
       setState(() {
         _attemptingLogin = true;
       });
-      await platform.invokeMethod('login');
+
+      if (app.isLoggedIn) {
+        await app.login(context);
+
+        setState(() {
+          _attemptingLogin = false;
+          _loggingIn = true;
+        });
+
+        return;
+      }
+
+      var partyAuth = new OAuthView(
+        '${Constants.partyApi}/auth/login',
+        '${Constants.partyApi}/auth/finished',
+      );
+      partyAuth.start();
+      await partyAuth.onFinished;
+      var cookies = await partyAuth.getCookies(Constants.partyApi);
+      try {
+        var sessionCookie = cookies.firstWhere(
+                (cookie) => cookie.name == "cpSESSION"
+        );
+
+        setState(() {
+          _attemptingLogin = false;
+          _loggingIn = true;
+        });
+
+        await app.login(context, sessionCookie);
+      } catch(e) {
+        // TODO: Show error dialog: Could not login
+        // TODO: Send error to sentry: Could not read session cookie
+      }
     } on PlatformException catch (e) {
       app.spotify.logout(context);
 

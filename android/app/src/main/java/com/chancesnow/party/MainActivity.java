@@ -7,6 +7,7 @@ import android.os.Looper;
 import android.support.design.widget.Snackbar;
 import android.util.Log;
 import android.view.View;
+import android.webkit.CookieManager;
 
 import com.chancesnow.party.interop.Message;
 import com.chancesnow.party.interop.SetAccessTokenStateMessage;
@@ -28,9 +29,12 @@ public class MainActivity extends FlutterActivity {
   private static final int SPOTIFY_AUTH_REQUEST_CODE = 2977; // Tel keys: C-X-S-S
   private static final String CLIENT_ID = "658e37b135ea40bcabd7b3c61c8070f6";
   private static final String REDIRECT_URI = "chancesparty://callback";
+  private static final String MAIN_CHANNEL = "com.chancesnow.party";
+  private static final String MAIN_MESSAGE_CHANNEL = "com.chancesnow.party/messages";
   private static final String SPOTIFY_CHANNEL = "com.chancesnow.party/spotify";
   private static final String SPOTIFY_MESSAGE_CHANNEL = "com.chancesnow.party/spotify/messages";
 
+  private BasicMessageChannel mMainChannel;
   private BasicMessageChannel mSpotifyChannel;
 
   private UUID mLoginState;
@@ -42,8 +46,31 @@ public class MainActivity extends FlutterActivity {
     super.onCreate(savedInstanceState);
     GeneratedPluginRegistrant.registerWith(this);
 
+    mMainChannel = new BasicMessageChannel<>(
+            getFlutterView(), MAIN_MESSAGE_CHANNEL, Message.MESSAGE_CODEC
+    );
     mSpotifyChannel = new BasicMessageChannel<>(
             getFlutterView(), SPOTIFY_MESSAGE_CHANNEL, Message.MESSAGE_CODEC
+    );
+
+    new MethodChannel(getFlutterView(), MAIN_CHANNEL).setMethodCallHandler(
+            new MethodChannel.MethodCallHandler() {
+              @Override
+              public void onMethodCall(MethodCall call, MethodChannel.Result result) {
+                if (call.method.equals("getCookies")) {
+                  if (!call.hasArgument("url")) {
+                    result.error("ARGUMENT", "Cookie url is required argument", null);
+                  }
+
+                  String cookie = CookieManager.getInstance().getCookie(
+                          (String) call.argument("url")
+                  );
+                  result.success(cookie);
+                } else {
+                  result.notImplemented();
+                }
+              }
+            }
     );
 
     new MethodChannel(getFlutterView(), SPOTIFY_CHANNEL).setMethodCallHandler(
@@ -54,6 +81,7 @@ public class MainActivity extends FlutterActivity {
                   login();
 
                   result.success(mTryingLogin);
+                } else if (call.method.equals("getCookies")) {
                 } else {
                   result.notImplemented();
                 }

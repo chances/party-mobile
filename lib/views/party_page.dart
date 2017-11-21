@@ -39,7 +39,7 @@ class _PartyPageState extends State<PartyPage> {
     );
   }
 
-  Future<Null> get _loadUser {
+  Future<Null> get _startParty {
     return null;
   }
 
@@ -134,7 +134,21 @@ class _PartyPageState extends State<PartyPage> {
             mainAxisAlignment: MainAxisAlignment.center,
             crossAxisAlignment: CrossAxisAlignment.center,
           )
-      )
+      ),
+      new Positioned(
+        bottom: 16.0,
+        left: 0.0,
+        right: 0.0,
+        child: new Row(
+          children: [
+            new RaisedButton(
+              onPressed: () {},
+              child: new Text('Previous Parties'),
+            )
+          ],
+          mainAxisAlignment: MainAxisAlignment.center,
+        ),
+      ),
     ];
   }
 

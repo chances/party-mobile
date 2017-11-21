@@ -35,10 +35,12 @@ class _StartupPageState extends State<StartupPage> {
         _loading = false;
       });
 
+      // TODO: Preload common images (spotify footer, party logo, etc.)
+
       return new Future.delayed(new Duration(milliseconds: 400), () {});
     }).then((_) {
-      final path = app.spotify.isLoggedIn ? '/party' : '/login';
-      final transitionDuration = app.spotify.isLoggedIn
+      final path = app.isLoggedIn ? '/party' : '/login';
+      final transitionDuration = app.isLoggedIn
           ? new Duration(seconds: 0)
           : new Duration(milliseconds: 750);
 

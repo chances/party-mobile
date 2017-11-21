@@ -1,7 +1,10 @@
 import 'dart:async';
+import 'dart:io';
 
 import 'package:fluro/fluro.dart';
 import 'package:flutter/widgets.dart';
+import 'package:party/api/base.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:spotify/spotify_io.dart';
 
 import 'package:party/models/interop/set_access_token_state.dart';
@@ -11,6 +14,9 @@ import 'package:party/models/spotify.dart';
 final app = new AppContext();
 
 class AppContext {
+  Cookie _session;
+  ApiBase _api;
+
   Spotify get spotify => Spotify.getInstance();
   final router = new Router();
 
@@ -18,9 +24,17 @@ class AppContext {
   Party party;
   var playlists = <PlaylistSimple>[];
 
-  bool get hasParty => party != null;
-
   AppContext() {
+    SharedPreferences.getInstance().then((prefs) {
+      var session = prefs.getString('PARTY_SESSION');
+
+      if (session != null && session.isNotEmpty) {
+        _session = new Cookie.fromSetCookieValue(session);
+
+        _api = new ApiBase(_session);
+      }
+    });
+
     spotify.onLogout = (BuildContext context, bool wasAutomatic) {
       if (wasAutomatic) {
         logout(context);
@@ -28,18 +42,35 @@ class AppContext {
     };
   }
 
-  void login(BuildContext context, SetAccessTokenStateMessage setToken) {
-    app.spotify.setToken(setToken.accessToken, setToken.expiresAt);
+  bool get isLoggedIn => _session != null;
+  bool get hasParty => party != null;
 
-    app.spotify.client(context).users.me().then((user) {
-      this.user = user;
+  ApiBase get api => _api;
 
-      final route = app.router.matchRoute(
-        context, '/party',
-        transitionType: TransitionType.fadeIn,
-      ).route;
-      Navigator.pushReplacement(context, route);
-    });
+  Future login(BuildContext context, [Cookie sessionCookie]) async {
+    if (sessionCookie == null && _session == null) {
+      throw new ArgumentError.notNull('sessionCookie');
+    } else if (sessionCookie != null) {
+      _session = sessionCookie;
+
+      var prefs = await SharedPreferences.getInstance();
+      prefs.setString('PARTY_SESSION', _session.toString());
+      await prefs.commit();
+    }
+
+    _api = new ApiBase(_session);
+
+    var token = await _api.auth.getToken();
+    app.spotify.setToken(token.accessToken, DateTime.parse(token.tokenExpiry));
+
+    var user = await app.spotify.client(context).users.me();
+    this.user = user;
+
+    final route = app.router.matchRoute(
+      context, '/party',
+      transitionType: TransitionType.fadeIn,
+    ).route;
+    Navigator.pushReplacement(context, route);
   }
 
   void logout(BuildContext context) {
@@ -50,9 +81,15 @@ class AppContext {
     new Future.value(Navigator.of(context).canPop())
         .then((canPop) => _navigateToLoginPage(context, canPop))
         .then((_) {
+      _api = null;
+      _session = null;
       user = null;
       party = null;
       playlists.clear();
+
+      return SharedPreferences.getInstance();
+    }).then((prefs) {
+      return prefs.clear();
     });
   }
 

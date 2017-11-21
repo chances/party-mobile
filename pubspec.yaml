@@ -10,6 +10,10 @@ dependencies:
   fluro: ^1.1.0
   shared_preferences: ^0.2.5
   flutter_search_bar: any
+  flutter_webview_plugin:
+    git:
+      url: git://github.com/chances/flutter_webview_plugin.git
+      ref: master
   flutter:
     sdk: flutter
 
