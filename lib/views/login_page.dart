@@ -7,7 +7,6 @@ import 'package:flutter/services.dart';
 import 'package:party/app_context.dart';
 import 'package:party/constants.dart';
 import 'package:party/models/interop/message.dart';
-import 'package:party/models/interop/set_access_token_state.dart';
 import 'package:party/oauth_view.dart';
 import 'package:party/views/widgets/primary_button.dart';
 
@@ -56,11 +55,22 @@ class _LoginPageState extends State<LoginPage> {
       }
 
       var partyAuth = new OAuthView(
-        '${Constants.partyApi}/auth/login',
+        '${Constants.partyApi}/auth/mobile',
         '${Constants.partyApi}/auth/finished',
       );
       partyAuth.start();
-      await partyAuth.onFinished;
+      await partyAuth.onClosed;
+      if (partyAuth.isCancelled) {
+        // Auth was cancelled purposefully or by error
+        setState(() {
+          _attemptingLogin = false;
+        });
+
+        // TODO: Detect failed logins
+
+        return;
+      }
+
       var cookies = await partyAuth.getCookies(Constants.partyApi);
       try {
         var sessionCookie = cookies.firstWhere(

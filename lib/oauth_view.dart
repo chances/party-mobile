@@ -12,6 +12,7 @@ class OAuthView {
   final String _loginUrl;
   final String _finishUrl;
   Future _onFinished;
+  bool _finished = false;
   bool _closed = false;
 
   OAuthView(String loginUrl, String finishUrl)
@@ -21,14 +22,27 @@ class OAuthView {
         _webView = new FlutterWebviewPlugin() {
     _onFinished = _webView.onUrlChanged
         .firstWhere((url) => url == _finishUrl)
-        .then((_) => this.close());
+        .then((_) {
+          _finished = true;
+          _closed = true;
+          this.close();
+        });
     _webView.onDestroy.listen((_) => _closed = true);
     _webView.onBackPressed.listen((_) => _closed = true);
   }
 
+  bool get isFinished => _finished;
+  bool get isCancelled => _closed && !_finished;
   bool get isClosed => _closed;
 
   Future get onFinished => _onFinished;
+  Future get onClosed {
+    return Future.any([
+      _onFinished,
+      _webView.onDestroy.first,
+      _webView.onBackPressed.first
+    ]);
+  }
 
   Stream<String> get onUrlChanged => _webView.onUrlChanged;
 
