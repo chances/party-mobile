@@ -168,7 +168,7 @@ class _RoundedButtonState extends State<RoundedButton> {
     final ThemeData theme = Theme.of(context);
     final Color textColor = _textColor;
     final TextStyle style = theme.textTheme.button.copyWith(color: textColor);
-    final ButtonTheme buttonTheme = ButtonTheme.of(context);
+    final ButtonThemeData buttonTheme = ButtonTheme.of(context);
     final double height = widget.height ?? buttonTheme.height;
     final double elevation = (_highlight ? widget.highlightElevation : widget.elevation) ?? 0.0;
     final bool hasColorOrElevation = (widget.color != null || elevation > 0);
