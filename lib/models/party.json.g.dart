@@ -26,7 +26,7 @@ abstract class PartyMapper {
           ..put('room_code', object.roomCode)
           ..put('ended', object.ended)
           ..put('guests', object.guests?.map(GuestMapper.map)?.toList())
-          ..put('current_track', TrackMapper.map(object.currentTrack)))
+          ..put('current_track', PlayingTrackMapper.map(object.currentTrack)))
         .toMap();
   }
 
@@ -41,7 +41,7 @@ abstract class PartyMapper {
     // ignore: avoid_as
     object.guests =
         (map['guests'] as List<dynamic>)?.map(GuestMapper.parse)?.toList();
-    object.currentTrack = TrackMapper.parse(map['current_track']);
+    object.currentTrack = PlayingTrackMapper.parse(map['current_track']);
     return object;
   }
 

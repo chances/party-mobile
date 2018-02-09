@@ -70,6 +70,40 @@ abstract class TrackMapper {
   }
 }
 
+/// Mapper for PlayingTrack
+abstract class PlayingTrackMapper {
+  /// Converts an instance of PlayingTrack to Map.
+  static Map<String, dynamic> map(PlayingTrack object) {
+    if (object == null) return null;
+    return (new _owl_json.MapBuilder(ordered: false)
+          ..put('paused', object.paused)
+          ..put('elapsed', object.elapsed))
+        .toMap();
+  }
+
+  /// Converts a Map to an instance of PlayingTrack.
+  static PlayingTrack parse(Map<String, dynamic> map) {
+    if (map == null) return null;
+    final PlayingTrack object = new PlayingTrack();
+    object.paused = map['paused'];
+    object.elapsed = map['elapsed'];
+    return object;
+  }
+
+  /// Converts a JSON string to an instance of PlayingTrack.
+  static PlayingTrack fromJson(String json) {
+    if (json == null || json.isEmpty) return null;
+    final Map<String, dynamic> map = JSON.decoder.convert(json);
+    return parse(map);
+  }
+
+  /// Converts an instance of PlayingTrack to JSON string.
+  static String toJson(PlayingTrack object) {
+    if (object == null) return null;
+    return JSON.encoder.convert(map(object));
+  }
+}
+
 /// Mapper for TrackArtist
 abstract class TrackArtistMapper {
   /// Converts an instance of TrackArtist to Map.

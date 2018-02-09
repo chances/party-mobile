@@ -24,6 +24,13 @@ class Track {
 }
 
 @JsonClass()
+class PlayingTrack extends Track {
+  bool paused;
+
+  int elapsed;
+}
+
+@JsonClass()
 class TrackArtist {
   String id;
 

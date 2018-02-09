@@ -15,7 +15,7 @@ class Party {
   List<Guest> guests;
 
   @JsonField(key: 'current_track')
-  Track currentTrack;
+  PlayingTrack currentTrack;
 }
 
 @JsonClass()
