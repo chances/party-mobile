@@ -39,7 +39,7 @@ class Constants {
   static FadeInImage fadeInImage(String image, [Duration fadeInDuration = const Duration(milliseconds: 250)]) {
     return new FadeInImage.assetNetwork(
       image: image,
-      placeholder: 'placeholder',
+      placeholder: 'images/placeholder.png',
       fadeOutDuration: Duration.zero,
       fadeInDuration: fadeInDuration,
     );
