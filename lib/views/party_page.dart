@@ -3,12 +3,13 @@ import 'dart:async';
 import 'package:fluro/fluro.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_search_bar/flutter_search_bar.dart';
-import 'package:party/views/playlists_page.dart';
 import 'package:spotify/spotify_io.dart';
 
 import 'package:party/app_context.dart';
 import 'package:party/constants.dart';
+import 'package:party/models/party.dart';
 import 'package:party/views/widgets/primary_button.dart';
+import 'package:party/views/playlists_page.dart';
 
 class PartyPage extends StatefulWidget {
   PartyPage({Key key}) : super(key: key);
@@ -98,10 +99,11 @@ class _PartyPageState extends State<PartyPage> {
       Constants.logoutMenu(context, <PopupMenuEntry<String>>[
         const PopupMenuItem(value: 'end', child: const Text('End Party')),
         const PopupMenuDivider(),
-      ], (value) {
+      ], (value) async {
         if (value == 'end') {
-          setState(() async {
-            app.party = await app.endParty();
+          Party party = await app.endParty();
+          setState(() {
+            app.party = party;
           });
         }
       })
