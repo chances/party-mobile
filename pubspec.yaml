@@ -9,7 +9,10 @@ dependencies:
   owl: '>=0.2.1 <0.3.0'
   fluro: ^1.1.0
   shared_preferences: ^0.2.5
-  flutter_search_bar: any
+  flutter_search_bar:
+    git:
+      url: git://github.com/ArcticZeroo/flutter-search-bar.git
+      ref: master
   flutter_webview_plugin:
     git:
       url: git://github.com/chances/flutter_webview_plugin.git
