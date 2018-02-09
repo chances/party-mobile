@@ -42,20 +42,24 @@ class _PartyPageState extends State<PartyPage> {
     );
   }
 
-  Future<Null> get _startParty {
-    return null;
+  Future<Null> _startParty() async {
+    PlaylistSimple playlist = await _selectPlaylist();
+    if (playlist == null) return;
+
+    var party = await app.api.party.start(app.user.displayName, playlist.id);
+    setState(() {
+      app.party = party;
+    });
   }
 
-  void _selectPlaylist() {
-    // TODO: Refactor this elsewhere
-    Navigator.of(context)
+  Future<PlaylistSimple> _selectPlaylist() {
+    // TODO: Refactor this elsewhere?
+    return Navigator.of(context)
         .push(new MaterialPageRoute<PlaylistSimple>(builder: (BuildContext context) {
           return PlaylistsPage.handler.handlerFunc(context, null);
-    })).then((PlaylistSimple playlist) {
-      if (playlist == null) return;
+    }));
+  }
 
-      // TODO: Call server /party/start (w/ host's name and playlist ID)
-    });
   }
 
   @override
@@ -96,17 +100,19 @@ class _PartyPageState extends State<PartyPage> {
 
   AppBar buildAppBar(BuildContext context) {
     final actions = [
-      Constants.logoutMenu(context, <PopupMenuEntry<String>>[
-        const PopupMenuItem(value: 'end', child: const Text('End Party')),
-        const PopupMenuDivider(),
-      ], (value) async {
-        if (value == 'end') {
-          Party party = await app.endParty();
-          setState(() {
-            app.party = party;
-          });
-        }
-      })
+      app.hasParty
+        ? Constants.logoutMenu(context, <PopupMenuEntry<String>>[
+          const PopupMenuItem(value: 'end', child: const Text('End Party')),
+          const PopupMenuDivider(),
+        ], (value) async {
+          if (value == 'end') {
+            Party party = await app.endParty(context);
+            setState(() {
+              app.party = party;
+            });
+          }
+        })
+        : Constants.logoutMenu(context)
     ];
 
     if (app.hasParty) {
@@ -147,7 +153,7 @@ class _PartyPageState extends State<PartyPage> {
                   )
                 ]),
               ),
-              new PrimaryButton('Start', onPressed: _selectPlaylist)
+              new PrimaryButton('Start', onPressed: _startParty)
             ],
             mainAxisAlignment: MainAxisAlignment.center,
             crossAxisAlignment: CrossAxisAlignment.center,
