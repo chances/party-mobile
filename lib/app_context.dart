@@ -100,10 +100,13 @@ class AppContext {
     }
   }
 
-  Future endParty() async {
-    party = null;
+  Future<Party> endParty() async {
+    await api.party.end();
+    // TODO: Handle errors, if failed return existing party?
 
-    // TODO: Call api /party/end
+    // TODO: Anything else to do to end a party?
+
+    return null;
   }
 
   Future<bool> _navigateToLoginPage(BuildContext context, bool popRoutes) {

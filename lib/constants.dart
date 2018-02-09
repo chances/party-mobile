@@ -3,6 +3,8 @@ import 'package:flutter/painting.dart';
 
 import 'package:party/app_context.dart';
 
+typedef void MenuEntrySelected(String value);
+
 class Constants {
 
   static final Color colorPrimary = const Color(0xFF242424);
@@ -64,11 +66,15 @@ class Constants {
     );
   }
 
-  static Widget logoutMenu(BuildContext context, [List<PopupMenuEntry<String>> otherItems]) {
+  static Widget logoutMenu(BuildContext context, [List<PopupMenuEntry<String>> otherItems, MenuEntrySelected otherItemSelected]) {
     return new PopupMenuButton(
-      onSelected: (String result) {
-        // TODO: Add confirm dialog
-        app.logout(context);
+      onSelected: (String value) {
+        if (value == 'logout') {
+          // TODO: Add confirm dialog
+          app.logout(context);
+        } else if (otherItems != null && otherItemSelected != null) {
+          otherItemSelected(value);
+        }
       },
       itemBuilder: (BuildContext context) {
         var items = otherItems == null ? <PopupMenuEntry<String>>[] : otherItems;

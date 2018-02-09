@@ -36,10 +36,14 @@ class ApiBase {
     return UTF8.decode(response.bodyBytes);
   }
 
-  Future<String> post(Uri path, dynamic body) async {
-    var response = await _client.post(path, headers: {
+  Future<String> post(Uri path, [dynamic body]) async {
+    var headers = {
       'Cookie': _session.toString(),
-    }, body: body);
+    };
+    if (body != null) {
+      headers['Content-Type'] = 'application/json';
+    }
+    var response = await _client.post(path, headers: headers, body: body);
 
     return UTF8.decode(response.bodyBytes);
   }

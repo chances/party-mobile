@@ -98,7 +98,13 @@ class _PartyPageState extends State<PartyPage> {
       Constants.logoutMenu(context, <PopupMenuEntry<String>>[
         const PopupMenuItem(value: 'end', child: const Text('End Party')),
         const PopupMenuDivider(),
-      ])
+      ], (value) {
+        if (value == 'end') {
+          setState(() async {
+            app.party = await app.endParty();
+          });
+        }
+      })
     ];
 
     if (app.hasParty) {
