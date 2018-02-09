@@ -7,11 +7,11 @@ class Endpoint {
 
   ApiBase get api => _api;
 
-  Uri route(String route) {
+  Uri route(String route, [Map<String, String> params]) {
     if (_api.baseUri.scheme == 'https') {
-      return new Uri.https(_api.baseUri.authority, route);
+      return new Uri.https(_api.baseUri.authority, route, params);
     } else {
-      return new Uri.http(_api.baseUri.authority, route);
+      return new Uri.http(_api.baseUri.authority, route, params);
     }
   }
 }
