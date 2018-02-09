@@ -37,6 +37,7 @@ flutter:
   uses-material-design: true
 
   assets:
+    - images/placeholder.png
     - images/party_logo.png
     - images/spotify_logo_white.png
 

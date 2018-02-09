@@ -98,15 +98,15 @@ class _PlaylistsPageState extends State<PlaylistsPage> {
           ),
         ),
         bottomNavigationBar: Constants.footer(context),
-        body: buildPlaylistView(context),
+        body: buildPlaylistWidget(context),
     );
   }
 
-  Widget buildPlaylistView(BuildContext context) {
+  Widget buildPlaylistWidget(BuildContext context) {
     if (!_loading && app.playlists.isNotEmpty) {
-      return buildPlaylistListView(context);
+      return buildPlaylistList(context);
     } else if (!_loading && app.playlists.isEmpty) {
-      return buildPlaylistListView(
+      return buildPlaylistList(
           context, 'You have no Spotify playlists'
       );
     }
@@ -123,7 +123,7 @@ class _PlaylistsPageState extends State<PlaylistsPage> {
                 new Expanded(child: Constants.loading)
               ], crossAxisAlignment: CrossAxisAlignment.stretch);
             default:
-              return buildPlaylistListView(
+              return buildPlaylistList(
                   context,
                   snapshot.hasError ? snapshot.error : null
               );
@@ -132,7 +132,7 @@ class _PlaylistsPageState extends State<PlaylistsPage> {
     );
   }
 
-  Widget buildPlaylistListView(BuildContext context, [Object error]) {
+  Widget buildPlaylistList(BuildContext context, [Object error]) {
     var playlistsOrError = error == null
         ? new Column(children: [
       new Expanded(child: new ListView(
@@ -169,7 +169,7 @@ class _PlaylistsPageState extends State<PlaylistsPage> {
             color: Constants.colorAccentLightControl
         ),
       )
-      : new Image.network(images.first.url);
+      : Constants.fadeInImage(images.first.url);
   }
 
   String playlistSubtitle(PlaylistSimple playlist) {

@@ -36,6 +36,15 @@ class Constants {
 
   static final double footerHeight = 53.0;
 
+  static FadeInImage fadeInImage(String image, [Duration fadeInDuration = const Duration(milliseconds: 250)]) {
+    return new FadeInImage.assetNetwork(
+      image: image,
+      placeholder: 'placeholder',
+      fadeOutDuration: Duration.zero,
+      fadeInDuration: fadeInDuration,
+    );
+  }
+
   static Widget footer(BuildContext context, [double opacity = 1.0]) {
     var theme = Theme.of(context);
     var textStyle = theme.textTheme.body1
