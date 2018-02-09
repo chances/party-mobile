@@ -7,7 +7,6 @@ import 'package:party/api/base.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:spotify/spotify_io.dart';
 
-import 'package:party/models/interop/set_access_token_state.dart';
 import 'package:party/models/party.dart';
 import 'package:party/models/spotify.dart';
 
