@@ -17,7 +17,7 @@ class Party extends Endpoint {
     }
   }
 
-  Future<Null> end() async {
-    await api.post(route('/party/stop'));
+  Future<Null> end() {
+    return api.post(route('/party/end'));
   }
 }

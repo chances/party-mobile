@@ -2,8 +2,10 @@ import 'dart:async';
 import 'dart:io';
 
 import 'package:fluro/fluro.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:party/api/base.dart';
+import 'package:party/api/exception.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:spotify/spotify_io.dart';
 
@@ -99,9 +101,21 @@ class AppContext {
     }
   }
 
-  Future<Party> endParty() async {
-    await api.party.end();
-    // TODO: Handle errors, if failed return existing party?
+  Future<Party> endParty(BuildContext context) async {
+    try {
+      await api.party.end();
+    } on ApiException catch (e) {
+      showDialog(
+        context: context,
+        barrierDismissible: true,
+        child: new AlertDialog(
+          title: new Text('Party Error'),
+          content: new Text(e.message),
+        )
+      );
+      
+      return party;
+    }
 
     // TODO: Anything else to do to end a party?
 

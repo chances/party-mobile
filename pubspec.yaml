@@ -26,7 +26,7 @@ dev_dependencies:
 
 # Owl codegen snippet:
 # $ pub activate global owl_codegen '>=0.2.1+2 <0.3.0'
-# $ flutter packages pub global run owl_codegen:main -t json -p party -g 'lib/models/**/*.dart,lib/models/*.dart'
+# $ flutter packages pub global run owl_codegen:main -t json -p party -g 'lib/models/**/*.dart,lib/models/*.dart,lib/api/errors.dart'
 
 # For information on the generic Dart part of this file, see the
 # following page: https://www.dartlang.org/tools/pub/pubspec
