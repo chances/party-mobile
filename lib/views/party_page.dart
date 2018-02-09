@@ -60,12 +60,26 @@ class _PartyPageState extends State<PartyPage> {
     }));
   }
 
+  Future<Null> _play() async {
+    await app.api.playback.play(true);
+  }
+
+  Future<Null> _pause() async {
+    await app.api.playback.pause(app.party.currentTrack.elapsed);
+  }
+
+  Future<Null> _resume() async {
+    await app.api.playback.resume();
+  }
+
+  Future<Null> _skip() async {
+    await app.api.playback.skip();
   }
 
   @override
   Widget build(BuildContext context) {
     var content = app.hasParty
-        ? buildSelectPlaylist(context)
+        ? app.party.currentTrack == null ? buildBeginPlayback(context) : null
         : buildStartParty(context);
 
     final BottomNavigationBar bottomNavBar = app.hasParty
@@ -176,25 +190,29 @@ class _PartyPageState extends State<PartyPage> {
     ];
   }
 
-  List<Widget> buildSelectPlaylist(BuildContext context) {
+  List<Widget> buildBeginPlayback(BuildContext context) {
     return [
       new Center(
           child: new Column(
             children: [
               new Padding(
-                padding: new EdgeInsets.only(bottom: 16.0),
+                padding: new EdgeInsets
+                    .only(bottom: 16.0, left: 16.0, right: 16.0),
                 child: new Column(children: [
                   new Text(
-                    'Play your favorite playlist',
+                    'Play some music',
                     style: Theme.of(context).textTheme.headline,
                   ),
-//                  new Text(
-//                    '',
-//                    style: Theme.of(context).textTheme.body1,
-//                  )
+                  new Padding(
+                    padding: new EdgeInsets.only(top: 4.0),
+                    child: new Text(
+                      'Ask your guests to contribute after the music starts.',
+                      style: Theme.of(context).textTheme.body1,
+                    ),
+                  ),
                 ]),
               ),
-              new PrimaryButton('Select Playlist', onPressed: _selectPlaylist)
+              new PrimaryButton('Shuffle Play', onPressed: _play)
             ],
             mainAxisAlignment: MainAxisAlignment.center,
             crossAxisAlignment: CrossAxisAlignment.center,

@@ -8,6 +8,7 @@ import 'package:party/api/errors.dart';
 import 'package:party/api/errors.json.g.dart';
 import 'package:party/api/exception.dart';
 import 'package:party/api/party.dart';
+import 'package:party/api/playback.dart';
 import 'package:party/constants.dart';
 
 typedef Future<String> Request(Uri path);
@@ -19,17 +20,20 @@ class ApiBase {
 
   Auth _auth;
   Party _party;
+  Playback _playback;
 
   ApiBase(this._session) {
     _client = new http.Client();
 
     _auth = new Auth(this);
     _party = new Party(this);
+    _playback = new Playback(this);
   }
 
   Uri get baseUri => _baseUri;
   Auth get auth => _auth;
   Party get party => _party;
+  Playback get playback => _playback;
 
   Future<String> get(Uri path) async {
     http.Response response = await _client.get(path, headers: {
