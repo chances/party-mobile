@@ -7,23 +7,23 @@ typedef void MenuEntrySelected(String value);
 
 class Constants {
 
-  static final Color colorPrimary = const Color(0xFF242424);
-  static final Color colorPrimaryDark = const Color(0xFF0A0A0A);
-  static final Color colorAccent = const Color(0xFF00B957);
-  static final Color colorAccentHighlight = const Color(0xFF00D764);
-  static final Color colorAccentLight = const Color(0xFFFCFCFC);
+  static const Color colorPrimary = const Color(0xFF242424);
+  static const Color colorPrimaryDark = const Color(0xFF0A0A0A);
+  static const Color colorAccent = const Color(0xFF9B58B5);
+  static const Color colorAccentHighlight = const Color(0xFF00D764);
+  static const Color colorAccentLight = const Color(0xFFFCFCFC);
 
-  static final Color colorAccentControlHighlight = const Color(0xFF292929);
+  static const Color colorAccentControlHighlight = const Color(0xFF292929);
 
-  static final Color colorAccentLightControl = const Color(0xFFA0A0A0);
-  static final Color colorAccentLightControlHighlight = const Color(0xFF797979);
+  static const Color colorAccentLightControl = const Color(0xFFA0A0A0);
+  static const Color colorAccentLightControlHighlight = const Color(0xFF797979);
 
-  static final Color statusBarColor = colorPrimary;
+  static const Color statusBarColor = colorPrimary;
 
   static final Typography typography = new Typography(platform: TargetPlatform.android);
 
   static final loadingColorAnimation =
-    const AlwaysStoppedAnimation<Color>(const Color(0xFF00B957));
+    const AlwaysStoppedAnimation<Color>(colorAccent);
   static final Widget loading = new Column(
     mainAxisAlignment: MainAxisAlignment.center,
     crossAxisAlignment: CrossAxisAlignment.center,
