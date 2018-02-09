@@ -67,7 +67,7 @@ abstract class GuestMapper {
     return (new _owl_json.MapBuilder(ordered: false)
           ..put('name', object.name)
           ..put('alias', object.alias)
-          ..put('ckecked_in', object.checkedIn))
+          ..put('checked_in', object.checkedIn))
         .toMap();
   }
 
@@ -77,7 +77,7 @@ abstract class GuestMapper {
     final Guest object = new Guest();
     object.name = map['name'];
     object.alias = map['alias'];
-    object.checkedIn = map['ckecked_in'];
+    object.checkedIn = map['checked_in'];
     return object;
   }
 

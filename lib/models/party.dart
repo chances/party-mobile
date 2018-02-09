@@ -24,6 +24,6 @@ class Guest {
 
   String alias;
 
-  @JsonField(key: 'ckecked_in')
+  @JsonField(key: 'checked_in')
   bool checkedIn;
 }
