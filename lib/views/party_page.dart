@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:fluro/fluro.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_search_bar/flutter_search_bar.dart';
+import 'package:party/models/track.dart';
 import 'package:spotify/spotify_io.dart';
 
 import 'package:party/app_context.dart';
@@ -57,6 +58,13 @@ class _PartyPageState extends State<PartyPage> {
 
   Future<Null> _play() async {
     await app.api.playback.play(true);
+    if (app.party.currentTrack == null) {
+      app.party = await app.api.party.get();
+    }
+    
+    setState(() {
+      app.party.currentTrack.paused = false;
+    });
   }
 
   Future<Null> _pause() async {
@@ -73,9 +81,23 @@ class _PartyPageState extends State<PartyPage> {
 
   @override
   Widget build(BuildContext context) {
+    var selectedTab = new Stack(
+      children: [
+        new Center(child: Constants.loadingIndicator)
+      ],
+    );
+
+    if (_selectedTab == PartyTab.music && app.hasParty) {
+      selectedTab = new Stack(
+        children: app.party.currentTrack == null
+          ? buildBeginPlayback(context)
+          : buildPlayer(context),
+      );
+    }
+
     var content = app.hasParty
-        ? app.party.currentTrack == null ? buildBeginPlayback(context) : null
-        : buildStartParty(context);
+      ? selectedTab
+      : new Stack(children: buildStartParty(context));
 
     final BottomNavigationBar bottomNavBar = app.hasParty
         ? new BottomNavigationBar(onTap: (index) {
@@ -102,7 +124,7 @@ class _PartyPageState extends State<PartyPage> {
 
     return new Scaffold(
       appBar: searchBar.build(context),
-      body: new Stack(children: content),
+      body: content,
       bottomNavigationBar: bottomNavBar,
     );
   }
@@ -213,18 +235,79 @@ class _PartyPageState extends State<PartyPage> {
             crossAxisAlignment: CrossAxisAlignment.center,
           )
       ),
-      new AnimatedPositioned(
-          bottom: _selectedTab == PartyTab.music
-              ? 0.0
-              : 0.0 - (Constants.footerHeight * 3),
-          left: 0.0,
-          right: 0.0,
-          curve: _selectedTab == PartyTab.music
-              ? Curves.easeOut
-              : Curves.easeIn,
-          child: Constants.footer(context),
-          duration: new Duration(milliseconds: 400)
-      )
+      Constants.musicFooter(context, false)
+    ];
+  }
+
+  List<Widget> buildPlayer(BuildContext context) {
+    PlayingTrack track = app.party.currentTrack;
+
+    var controls = [
+      new IconButton(
+        icon: new Icon(Icons.skip_previous),
+        iconSize: 36.0,
+        tooltip: 'Previous',
+        onPressed: null,
+      ),
+      new Padding(
+        padding: new EdgeInsets.symmetric(horizontal: 16.0),
+        child: new AnimatedCrossFade(
+          crossFadeState: track.isQueued ? CrossFadeState.showFirst : CrossFadeState.showSecond,
+          duration: Constants.trackChangeTransition,
+          firstChild: new Padding(
+            padding: new EdgeInsets.all(2.0),
+            child: new ConstrainedBox(
+              constraints: new BoxConstraints.loose(new Size.fromRadius(22.0)),
+              child: Constants.loadingIndicator,
+            ),
+          ),
+          secondChild: new IconButton(
+            icon: new Icon(track.paused ? Icons.play_arrow : Icons.pause),
+            iconSize: 48.0,
+            tooltip: track.paused ? 'Resume' : 'Play',
+            onPressed: () {
+              track.paused ? _resume() : _pause();
+            },
+          ),
+        ),
+      ),
+      new IconButton(
+        icon: new Icon(Icons.skip_next),
+        iconSize: 36.0,
+        tooltip: 'Next',
+        onPressed: null,
+      ),
+    ];
+
+    return [
+      new Center(
+        child: new Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            new ConstrainedBox(
+              child: Constants.fadeTransitionImage(track.images.first.url, BoxFit.scaleDown),
+              constraints: new BoxConstraints(maxWidth: 180.0, minHeight: 180.0),
+            ),
+            new Padding(
+              padding: const EdgeInsets.only(top: 8.0),
+              child: new Column(
+                children: [
+                  new Text(track.name, style: Theme.of(context).textTheme.headline),
+                  new Text(track.artists.first.name, style: Theme.of(context).textTheme.subhead),
+                  new Padding(
+                    padding: const EdgeInsets.only(top: 16.0),
+                    child: new Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: controls,
+                    )
+                  )
+                ],
+              )
+            )
+          ],
+        ),
+      ),
+      Constants.musicFooter(context, _selectedTab == PartyTab.music)
     ];
   }
 }

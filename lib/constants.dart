@@ -24,17 +24,28 @@ class Constants {
 
   static final loadingColorAnimation =
     const AlwaysStoppedAnimation<Color>(colorAccent);
+  static final CircularProgressIndicator loadingIndicator =
+    new CircularProgressIndicator(
+      valueColor: loadingColorAnimation,
+    );
   static final Widget loading = new Column(
     mainAxisAlignment: MainAxisAlignment.center,
     crossAxisAlignment: CrossAxisAlignment.center,
-    children: [
-      new CircularProgressIndicator(
-        valueColor: loadingColorAnimation,
-      ),
-    ],
+    children: [ loadingIndicator ],
   );
 
   static final double footerHeight = 53.0;
+
+  static const Duration trackChangeTransition = const Duration(milliseconds: 300);
+
+  static FadeInImage fadeTransitionImage(String image, [BoxFit fit, Duration fadeDuration = trackChangeTransition]) {
+    return new FadeInImage.assetNetwork(
+      image: image,
+      placeholder: 'images/placeholder.png',
+      fadeInDuration: fadeDuration,
+      fadeOutDuration: fadeDuration,
+    );
+  }
 
   static FadeInImage fadeInImage(String image, [Duration fadeInDuration = const Duration(milliseconds: 250)]) {
     return new FadeInImage.assetNetwork(
@@ -45,10 +56,13 @@ class Constants {
     );
   }
 
-  static Widget footer(BuildContext context, [double opacity = 1.0]) {
+  static Widget footer(BuildContext context, [bool hushed = false]) {
     var theme = Theme.of(context);
     var textStyle = theme.textTheme.body1
         .copyWith(decoration: TextDecoration.none);
+    if (hushed) {
+      textStyle = textStyle.copyWith(color: theme.textTheme.caption.color);
+    }
 
     return new Hero(
         tag: 'spotify-power',
@@ -65,13 +79,27 @@ class Constants {
                       style: textStyle,
                     ),
                   ),
-                  new Image.asset(
-                    'images/spotify_logo_white.png',
-                    height: 37.0,
+                  new Opacity(
+                    opacity: hushed ? 0.6 : 1.0,
+                    child: new Image.asset(
+                      'images/spotify_logo_white.png',
+                      height: 37.0,
+                    ),
                   ),
                 ]
             )
         ),
+    );
+  }
+
+  static musicFooter(BuildContext context, bool shown) {
+    return new AnimatedPositioned(
+        bottom: shown ? 0.0 : 0.0 - (footerHeight * 3),
+        left: 0.0,
+        right: 0.0,
+        curve: shown ? Curves.easeOut : Curves.easeIn,
+        child: footer(context, true),
+        duration: new Duration(milliseconds: 400)
     );
   }
 
