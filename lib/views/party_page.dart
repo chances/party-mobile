@@ -8,6 +8,7 @@ import 'package:spotify/spotify_io.dart';
 import 'package:party/app_context.dart';
 import 'package:party/constants.dart';
 import 'package:party/models/party.dart';
+import 'package:party/models/music.dart';
 import 'package:party/views/widgets/primary_button.dart';
 import 'package:party/views/playlists_page.dart';
 
@@ -22,12 +23,6 @@ class PartyPage extends StatefulWidget {
 
   @override
   _PartyPageState createState() => new _PartyPageState();
-}
-
-enum PartyTab {
-  music,
-  guests,
-  games,
 }
 
 class _PartyPageState extends State<PartyPage> {
