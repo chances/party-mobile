@@ -14,7 +14,12 @@ class Party {
 
   List<Guest> guests;
 
-  @JsonField(key: 'current_track')
+  @JsonField(key: 'current_track', native: true)
+  set currentTrackJson(Map json) => currentTrack = PlayingTrack.parse(json);
+  @JsonField(key: 'current_track', native: true)
+  Map get currentTrackJson => PlayingTrack.toJson(currentTrack);
+
+  @Transient()
   PlayingTrack currentTrack;
 }
 

@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:party/api/base.dart';
 
 class Endpoint {
@@ -13,5 +15,10 @@ class Endpoint {
     } else {
       return new Uri.http(_api.baseUri.authority, route, params);
     }
+  }
+
+  Map attributes(String json) {
+    Map data = JSON.decode(json)['data'];
+    return data['attributes'];
   }
 }

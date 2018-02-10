@@ -8,7 +8,6 @@
 // https://github.com/agilord/owl
 
 // ignore: unused_import, library_prefixes
-import 'package:party/models/track.json.g.dart';
 
 import 'party.dart';
 // ignore: unused_import, library_prefixes
@@ -26,7 +25,7 @@ abstract class PartyMapper {
           ..put('room_code', object.roomCode)
           ..put('ended', object.ended)
           ..put('guests', object.guests?.map(GuestMapper.map)?.toList())
-          ..put('current_track', PlayingTrackMapper.map(object.currentTrack)))
+          ..put('current_track', object.currentTrackJson))
         .toMap();
   }
 
@@ -41,7 +40,7 @@ abstract class PartyMapper {
     // ignore: avoid_as
     object.guests =
         (map['guests'] as List<dynamic>)?.map(GuestMapper.parse)?.toList();
-    object.currentTrack = PlayingTrackMapper.parse(map['current_track']);
+    object.currentTrackJson = map['current_track'];
     return object;
   }
 

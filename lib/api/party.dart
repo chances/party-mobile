@@ -12,7 +12,7 @@ class Party extends Endpoint {
   Future<models.Party> get() async {
     try {
       var json = await api.get(route('/party'));
-      return PartyMapper.fromJson(json);
+      return PartyMapper.parse(attributes(json));
     } catch (_) {
       return null;
     }
