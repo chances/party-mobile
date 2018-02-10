@@ -179,9 +179,16 @@ class _PartyPageState extends State<PartyPage> {
                 padding: new EdgeInsets.only(bottom: 16.0),
                 child: new Column(children: [
                   new Text(
-                    'Host a party with music, games, and fun!',
-                    style: Theme.of(context).textTheme.subhead,
-                  )
+                    'Get this party started',
+                    style: Theme.of(context).textTheme.headline,
+                  ),
+                  new Padding(
+                    padding: new EdgeInsets.only(top: 4.0),
+                    child: new Text(
+                      'Host a party with music, games, and fun!',
+                      style: Theme.of(context).textTheme.body1,
+                    ),
+                  ),
                 ]),
               ),
               new PrimaryButton('Start', onPressed: _startParty)
