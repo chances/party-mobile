@@ -61,7 +61,7 @@ class RoundedButton extends StatefulWidget {
   final Color splashColor;
 
   /// The secondary color of the button when the button is in the down (pressed)
-  /// state. The higlight color is represented as a solid color that is overlaid over the
+  /// state. The highlight color is represented as a solid color that is overlaid over the
   /// button color (if any). If the highlight color has transparency, the button color
   /// will show through. The highlight fades in quickly as the button is held down.
   ///
@@ -136,6 +136,8 @@ class _RoundedButtonState extends State<RoundedButton> {
       switch (widget.textTheme ?? ButtonTheme.of(context).textTheme) {
         case ButtonTextTheme.accent:
           return Theme.of(context).accentColor;
+        case ButtonTextTheme.primary:
+          return Theme.of(context).primaryColor;
         case ButtonTextTheme.normal:
           switch (_colorBrightness) {
             case Brightness.light:

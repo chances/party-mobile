@@ -1,9 +1,7 @@
 import 'dart:async';
 
-import 'package:party/models/party.dart' as models;
 import 'package:party/api/base.dart';
 import 'package:party/api/endpoint.dart';
-import 'package:party/models/party.json.g.dart';
 
 class Playback extends Endpoint {
   Playback(ApiBase api) : super(api);
