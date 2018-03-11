@@ -4,6 +4,7 @@ import 'package:fluro/fluro.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_search_bar/flutter_search_bar.dart';
 import 'package:party/models/track.dart';
+import 'package:party/views/widgets/add_to_library_button.dart';
 import 'package:spotify/spotify_io.dart';
 
 import 'package:party/app_context.dart';
@@ -250,12 +251,11 @@ class _PartyPageState extends State<PartyPage> {
     PlayingTrack track = app.party.currentTrack;
 
     var controls = [
-      new IconButton(
-        icon: new Icon(Icons.skip_previous),
-        iconSize: 36.0,
-        tooltip: 'Previous',
-        onPressed: null,
-      ),
+      new AddToLibraryButton(app, track, addedToLibrary: () {
+        setState(() {
+          app.party.currentTrack.isAdded = true;
+        });
+      }),
       new Padding(
         padding: new EdgeInsets.symmetric(horizontal: 16.0),
         child: new AnimatedCrossFade(

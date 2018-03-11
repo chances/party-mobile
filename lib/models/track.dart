@@ -51,6 +51,8 @@ class PlayingTrack extends Track {
 
   int elapsed;
 
+  bool isAdded = false;
+
   bool get isQueued => elapsed == null;
   bool get isPlaying => !paused;
 
