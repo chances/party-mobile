@@ -102,6 +102,15 @@ class _PartyPageState extends State<PartyPage> {
       selectedTab = new GuestList(app.party.guests);
     }
 
+    if (searchBar.isSearching) {
+      selectedTab = new Column(
+        children: <Widget>[
+          new Expanded(child: new Center(child: new Text('Search'))),
+          Constants.footer(context, true)
+        ],
+      );
+    }
+
     var content = app.hasParty
       ? selectedTab
       : new Stack(children: buildStartParty(context));
@@ -132,7 +141,7 @@ class _PartyPageState extends State<PartyPage> {
     return new Scaffold(
       appBar: searchBar.build(context),
       body: content,
-      bottomNavigationBar: bottomNavBar,
+      bottomNavigationBar: searchBar.isSearching ? null : bottomNavBar,
     );
   }
 
