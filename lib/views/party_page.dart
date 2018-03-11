@@ -6,6 +6,7 @@ import 'package:flutter_search_bar/flutter_search_bar.dart';
 import 'package:party/models/track.dart';
 import 'package:party/views/widgets/add_to_library_button.dart';
 import 'package:party/views/widgets/guest_list.dart';
+import 'package:party/views/widgets/splash_prompt.dart';
 import 'package:spotify/spotify_io.dart';
 
 import 'package:party/app_context.dart';
@@ -183,19 +184,7 @@ class _PartyPageState extends State<PartyPage> {
             children: [
               new Padding(
                 padding: new EdgeInsets.only(bottom: 16.0),
-                child: new Column(children: [
-                  new Text(
-                    'Get this party started',
-                    style: Theme.of(context).textTheme.headline,
-                  ),
-                  new Padding(
-                    padding: new EdgeInsets.only(top: 4.0),
-                    child: new Text(
-                      'Host a party with music, games, and fun!',
-                      style: Theme.of(context).textTheme.body1,
-                    ),
-                  ),
-                ]),
+                child: new SplashPrompt('Get this party started', ['Host a party with music, games, and fun!']),
               ),
               new PrimaryButton('Start', onPressed: _startParty)
             ],
@@ -226,21 +215,11 @@ class _PartyPageState extends State<PartyPage> {
           child: new Column(
             children: [
               new Padding(
-                padding: new EdgeInsets
-                    .only(bottom: 16.0, left: 16.0, right: 16.0),
-                child: new Column(children: [
-                  new Text(
-                    'Play some music',
-                    style: Theme.of(context).textTheme.headline,
-                  ),
-                  new Padding(
-                    padding: new EdgeInsets.only(top: 4.0),
-                    child: new Text(
-                      'Ask your guests to contribute after the music starts.',
-                      style: Theme.of(context).textTheme.body1,
-                    ),
-                  ),
-                ]),
+                padding: new EdgeInsets.only(bottom: 16.0),
+                child: new SplashPrompt(
+                  'Play some music',
+                  ['Ask your guests to contribute after the music starts.'],
+                ),
               ),
               new PrimaryButton('Shuffle Play', onPressed: _play)
             ],
