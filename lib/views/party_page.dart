@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_search_bar/flutter_search_bar.dart';
 import 'package:party/models/track.dart';
 import 'package:party/views/widgets/add_to_library_button.dart';
+import 'package:party/views/widgets/guest_list.dart';
 import 'package:spotify/spotify_io.dart';
 
 import 'package:party/app_context.dart';
@@ -35,7 +36,7 @@ class _PartyPageState extends State<PartyPage> {
     searchBar = new SearchBar(
         hintText: 'Search for a song',
         setState: setState,
-        buildDefaultAppBar: buildAppBar
+        buildDefaultAppBar: buildAppBar,
     );
   }
 
@@ -82,7 +83,7 @@ class _PartyPageState extends State<PartyPage> {
 
   @override
   Widget build(BuildContext context) {
-    var selectedTab = new Stack(
+    Widget selectedTab = new Stack(
       children: [
         new Center(child: Constants.loadingIndicator)
       ],
@@ -94,6 +95,10 @@ class _PartyPageState extends State<PartyPage> {
           ? buildBeginPlayback(context)
           : buildPlayer(context),
       );
+    }
+
+    if (_selectedTab == PartyTab.guests && app.hasParty) {
+      selectedTab = new GuestList(app.party.guests);
     }
 
     var content = app.hasParty
