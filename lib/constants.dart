@@ -41,7 +41,7 @@ class Constants {
   static FadeInImage fadeTransitionImage(String image, [BoxFit fit, Duration fadeDuration = trackChangeTransition]) {
     return new FadeInImage.assetNetwork(
       image: image,
-      placeholder: 'images/placeholder.png',
+      placeholder: Assets.img_placeholder,
       fadeInDuration: fadeDuration,
       fadeOutDuration: fadeDuration,
     );
@@ -50,7 +50,7 @@ class Constants {
   static FadeInImage fadeInImage(String image, [Duration fadeInDuration = const Duration(milliseconds: 250)]) {
     return new FadeInImage.assetNetwork(
       image: image,
-      placeholder: 'images/placeholder.png',
+      placeholder: Assets.img_placeholder,
       fadeOutDuration: Duration.zero,
       fadeInDuration: fadeInDuration,
     );
@@ -82,7 +82,7 @@ class Constants {
                   new Opacity(
                     opacity: hushed ? 0.6 : 1.0,
                     child: new Image.asset(
-                      'images/spotify_logo_white.png',
+                      Assets.img_spotify_white,
                       height: 37.0,
                     ),
                   ),

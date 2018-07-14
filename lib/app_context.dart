@@ -12,6 +12,8 @@ import 'package:spotify/spotify_io.dart';
 import 'package:party/models/party.dart';
 import 'package:party/models/spotify.dart';
 
+export 'assets.dart';
+
 final app = new AppContext();
 
 class AppContext {
