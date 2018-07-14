@@ -13,6 +13,9 @@ class Constants {
   static const Color colorAccentHighlight = const Color(0xFF00D764);
   static const Color colorAccentLight = const Color(0xFFFCFCFC);
 
+  static const Color colorBrandGradientBlue = const Color(0xFF298CC7);
+  static const Color colorBrandGradientPurple = const Color(0xFF9B58B5);
+
   static const Color colorAccentControlHighlight = const Color(0xFF292929);
 
   static const Color colorAccentLightControl = const Color(0xFFA0A0A0);
@@ -27,6 +30,10 @@ class Constants {
   static final CircularProgressIndicator loadingIndicator =
     new CircularProgressIndicator(
       valueColor: loadingColorAnimation,
+    );
+  static final CircularProgressIndicator loadingIndicatorWhite =
+    new CircularProgressIndicator(
+      valueColor: const AlwaysStoppedAnimation<Color>(Colors.white),
     );
   static final Widget loading = new Column(
     mainAxisAlignment: MainAxisAlignment.center,

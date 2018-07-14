@@ -72,10 +72,18 @@ class _PartyPageState extends State<PartyPage> {
 
   Future<Null> _pause() async {
     await app.api.playback.pause(app.party.currentTrack.elapsed);
+    var party = await app.api.party.get();
+    setState(() {
+      app.party = party;
+    });
   }
 
   Future<Null> _resume() async {
     await app.api.playback.resume();
+    var party = await app.api.party.get();
+    setState(() {
+      app.party = party;
+    });
   }
 
   Future<Null> _skip() async {

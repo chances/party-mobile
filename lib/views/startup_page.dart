@@ -71,24 +71,23 @@ class _StartupPageState extends State<StartupPage> {
           return new AnimatedOpacity(
               opacity: logoOpacity,
               duration: new Duration(milliseconds: 300),
-              child: new Stack(children: [
-                // TODO: Animate logo from position in launch background
-                new Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      new Padding(
-                        padding: new EdgeInsets.only(top: 16.0),
-                        child: new Image.asset(
-                          Assets.img_party_logo,
-                          width: 300.0,
-                        ),
-                      ),
-                    ]
+              child: new Container(
+                decoration: new BoxDecoration(
+                  gradient: new LinearGradient(
+                    begin: Alignment.topLeft,
+                    end: Alignment.bottomRight,
+                    colors: [
+                      Constants.colorBrandGradientBlue,
+                      Constants.colorBrandGradientPurple,
+                      Constants.colorBrandGradientPurple,
+                    ],
+                    stops: [0.0, 0.9, 1.0]
+                  ),
                 ),
-                new Center(child: new CircularProgressIndicator(
-                  valueColor: Constants.loadingColorAnimation,
-                ))
-              ])
+                child: new Stack(children: [
+                  new Center(child: Constants.loadingIndicatorWhite)
+                ]),
+              )
           );
         }
     );

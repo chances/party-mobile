@@ -106,6 +106,7 @@ public class MainActivity extends FlutterActivity {
                     .Builder(CLIENT_ID, AuthenticationResponse.Type.TOKEN, REDIRECT_URI)
                     .setScopes(new String[]{
                             "user-read-private",
+                            "user-library-modify",
                             "playlist-read-private",
                             "streaming"
                     })

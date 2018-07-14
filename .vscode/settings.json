@@ -20,5 +20,8 @@
         "typescript",
         "typescriptreact",
         "yml"
+    ],
+    "cSpell.words": [
+        "fluro"
     ]
 }

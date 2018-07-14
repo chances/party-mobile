@@ -2,4 +2,6 @@
 <resources>
     <color name="primary">#242424</color>
     <color name="primaryDark">#0A0A0A</color>
+    <color name="brandGradientBlue">#298CC7</color>
+    <color name="brandGradientPurple">#9B58B5</color>
 </resources>
