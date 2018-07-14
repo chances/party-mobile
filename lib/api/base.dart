@@ -5,7 +5,6 @@ import 'dart:io';
 import 'package:http/http.dart' as http;
 import 'package:party/api/auth.dart';
 import 'package:party/api/errors.dart';
-import 'package:party/api/errors.json.g.dart';
 import 'package:party/api/exception.dart';
 import 'package:party/api/party.dart';
 import 'package:party/api/playback.dart';
@@ -67,7 +66,7 @@ class ApiBase {
       throw new ApiException.fromPartyErrors([error]);
     } else if (response.statusCode != 200 && response.headers.containsKey('content-type') && response.headers['content-type'].startsWith('application/json')) {
       List<dynamic> errors = JSON.decode(body);
-      throw new ApiException.fromPartyErrors(errors.map((json) => PartyErrorMapper.parse(json)));
+      throw new ApiException.fromPartyErrors(errors.map((json) => PartyError.fromJson(json)));
     } else if (response.statusCode != 200) {
       throw new ApiException('Party received an invalid response from the server');
     }

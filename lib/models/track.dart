@@ -1,8 +1,12 @@
-import 'package:owl/annotation/json.dart';
-import 'package:party/models/track.json.g.dart';
+import 'package:json_annotation/json_annotation.dart';
 
-@JsonClass()
-class Track {
+part 'track.g.dart';
+
+@JsonSerializable()
+class Track extends Object with _$TrackSerializerMixin {
+  Track();
+  factory Track.fromJson(Map<String, dynamic> json) => _$TrackFromJson(json);
+
   String id;
 
   String name;
@@ -13,24 +17,24 @@ class Track {
 
   String endpoint;
 
-  @JsonField(key: 'began_playing')
+  @JsonKey(name: 'began_playing')
   String get beganPlayingNative => _beganPlaying?.toIso8601String();
-  @JsonField(key: 'began_playing')
+  @JsonKey(name: 'began_playing')
   set beganPlayingNative(String dateTime) {
     _beganPlaying =
         DateTime.parse(dateTime.split('.').first + '.000000Z').toUtc();
   }
 
-  @Transient()
+  @JsonKey(ignore: true)
   DateTime _beganPlaying;
-  @Transient()
+  @JsonKey(ignore: true)
   DateTime get beganPlaying => _beganPlaying;
 
   int duration;
 
   String contributor;
 
-  @JsonField(key: 'contributor_id')
+  @JsonKey(name: 'contributor_id')
   int contributorId;
 }
 
@@ -47,6 +51,13 @@ class PlayingTrack extends Track {
     contributorId = track.contributorId;
   }
 
+  factory PlayingTrack.fromJson(Map<String, dynamic> json) {
+    if (json == null) return null;
+    Track t = Track.fromJson(json);
+    PlayingTrack track = new PlayingTrack.fromTrack(t);
+    return track;
+  }
+
   bool paused = true;
 
   int elapsed;
@@ -56,29 +67,29 @@ class PlayingTrack extends Track {
   bool get isQueued => elapsed == null;
   bool get isPlaying => !paused;
 
-  static PlayingTrack parse(Map<String, dynamic> json) {
-    if (json == null) return null;
-    Track t = TrackMapper.parse(json);
-    PlayingTrack track = new PlayingTrack.fromTrack(t);
-    return track;
-  }
-
-  static Map toJson(PlayingTrack track) {
-    track.beganPlayingNative = track.beganPlaying.toIso8601String();
-    Map json = TrackMapper.map(track);
-    return json;
+  @override
+  Map<String, dynamic> toJson() {
+    this.beganPlayingNative = this.beganPlaying.toIso8601String();
+    return this.toJson();
   }
 }
 
-@JsonClass()
-class TrackArtist {
+@JsonSerializable()
+class TrackArtist extends Object with _$TrackArtistSerializerMixin {
+  TrackArtist();
+  factory TrackArtist.fromJson(Map<String, dynamic> json) =>
+      _$TrackArtistFromJson(json);
+
   String id;
 
   String name;
 }
 
-@JsonClass()
-class Image {
+@JsonSerializable()
+class Image extends Object with _$ImageSerializerMixin {
+  Image();
+  factory Image.fromJson(Map<String, dynamic> json) => _$ImageFromJson(json);
+
   int height;
 
   int width;

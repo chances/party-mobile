@@ -6,7 +6,6 @@ dependencies:
     git:
       url: git://github.com/chances/spotify-dart.git
       ref: party
-  owl: '>=0.2.1 <0.3.0'
   fluro: ^1.1.0
   shared_preferences: ^0.2.5
   flutter_search_bar:
@@ -17,29 +16,28 @@ dependencies:
     git:
       url: git://github.com/chances/flutter_webview_plugin.git
       ref: master
+  json_annotation: ^0.2.0
   flutter:
     sdk: flutter
 
 dev_dependencies:
   flutter_test:
     sdk: flutter
+  build_runner: ^0.8.10
+  json_serializable: ^0.5.0
 
-# Owl codegen snippet:
-# $ pub activate global owl_codegen '>=0.2.1+2 <0.3.0'
-# $ flutter packages pub global run owl_codegen:main -t json -p party -g 'lib/models/**/*.dart,lib/models/*.dart,lib/api/errors.dart'
+# json_serializer JSON model generation:
+# $ flutter packages pub run build_runner build
 
 # For information on the generic Dart part of this file, see the
 # following page: https://www.dartlang.org/tools/pub/pubspec
 
-# The following section is specific to Flutter.
 flutter:
-
   uses-material-design: true
-
   assets:
-    - images/placeholder.png
-    - images/party_logo.png
-    - images/spotify_logo_white.png
+    - assets/
+    - assets/images/
+    - images/
 
   # To add assets to your application, add an assets section, like this:
   # assets:

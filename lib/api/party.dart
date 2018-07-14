@@ -4,15 +4,15 @@ import 'dart:convert';
 import 'package:party/models/party.dart' as models;
 import 'package:party/api/base.dart';
 import 'package:party/api/endpoint.dart';
-import 'package:party/models/party.json.g.dart';
 
 class Party extends Endpoint {
   Party(ApiBase api) : super(api);
 
   Future<models.Party> get() async {
     try {
-      var json = await api.get(route('/party'));
-      return PartyMapper.parse(attributes(json));
+      var response = await api.get(route('/party'));
+      var map = json.decode(response);
+      return models.Party.fromJson(map);
     } catch (_) {
       return null;
     }
@@ -24,9 +24,10 @@ class Party extends Endpoint {
         'host': hostName,
         'playlist_id': playlistId
       };
-      var body = JSON.encode({'data': bodyRaw});
-      var json = await api.post(route('/party/start'), body);
-      return PartyMapper.fromJson(json);
+      var body = json.encode({'data': bodyRaw});
+      var response = await api.post(route('/party/start'), body);
+      var map = json.decode(response);
+      return models.Party.fromJson(map);
     } catch (_) {
       return null;
     }

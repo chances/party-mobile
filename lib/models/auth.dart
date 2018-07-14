@@ -1,10 +1,15 @@
-import 'package:owl/annotation/json.dart';
+import 'package:json_annotation/json_annotation.dart';
 
-@JsonClass()
-class SpotifyToken {
-  @JsonField(key: 'access_token')
+part 'auth.g.dart';
+
+@JsonSerializable()
+class SpotifyToken extends Object with _$SpotifyTokenSerializerMixin {
+  SpotifyToken() {}
+  factory SpotifyToken.fromJson(Map<String, dynamic> json) => _$SpotifyTokenFromJson(json);
+
+  @JsonKey(name: 'access_token')
   String accessToken;
 
-  @JsonField(key: 'token_expiry')
+  @JsonKey(name: 'token_expiry')
   String tokenExpiry;
 }

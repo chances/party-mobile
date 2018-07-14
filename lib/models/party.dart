@@ -1,34 +1,45 @@
-import 'package:owl/annotation/json.dart';
+import 'package:json_annotation/json_annotation.dart';
 
 import 'package:party/models/track.dart';
 
-@JsonClass()
-class Party {
-  @JsonField(native: true)
+part 'party.g.dart';
+
+Map rawMapFromJson(Map json) => json;
+Map rawMapToJson(Map json) => json;
+
+@JsonSerializable()
+class Party extends Object with _$PartySerializerMixin {
+  Party();
+  factory Party.fromJson(Map<String, dynamic> json) => _$PartyFromJson(json);
+
+  @JsonKey(fromJson: rawMapFromJson, toJson: rawMapToJson)
   Map location;
 
-  @JsonField(key: 'room_code')
+  @JsonKey(name: 'room_code')
   String roomCode;
 
   bool ended;
 
   List<Guest> guests;
 
-  @JsonField(key: 'current_track', native: true)
-  set currentTrackJson(Map json) => currentTrack = PlayingTrack.parse(json);
-  @JsonField(key: 'current_track', native: true)
-  Map get currentTrackJson => PlayingTrack.toJson(currentTrack);
+  @JsonKey(name: 'current_track', fromJson: rawMapFromJson, toJson: rawMapToJson)
+  set currentTrackJson(Map json) => currentTrack = PlayingTrack.fromJson(json);
+  @JsonKey(name: 'current_track', fromJson: rawMapFromJson, toJson: rawMapToJson)
+  Map get currentTrackJson => currentTrack.toJson();
 
-  @Transient()
+  @JsonKey(ignore: true)
   PlayingTrack currentTrack;
 }
 
-@JsonClass()
-class Guest {
+@JsonSerializable()
+class Guest extends Object with _$GuestSerializerMixin {
+  Guest();
+  factory Guest.fromJson(Map<String, dynamic> json) => _$GuestFromJson(json);
+
   String name;
 
   String alias;
 
-  @JsonField(key: 'checked_in')
+  @JsonKey(name: 'checked_in')
   bool checkedIn;
 }
