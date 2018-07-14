@@ -10,5 +10,4 @@ build:
 
 .PHONY: gen-json
 gen-json:
-	flutter packages pub global run owl_codegen:main -t json -p party -g \
-		'lib/models/**/*.dart,lib/models/*.dart,lib/api/errors.dart'
+	flutter packages pub run build_runner build
