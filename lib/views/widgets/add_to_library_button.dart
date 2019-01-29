@@ -23,7 +23,7 @@ class AddToLibraryButton extends StatelessWidget {
     } on SpotifyException catch(e) {
       showDialog(
         context: context,
-        child: new SimpleDialog(
+        builder: (context) => new SimpleDialog(
           title: new Text(
             'Could Not Add Song to Your Library',
             style: Theme.of(context).textTheme.title
@@ -31,7 +31,7 @@ class AddToLibraryButton extends StatelessWidget {
           children: [
             new Text(e.message, style: Theme.of(context).textTheme.body1)
           ],
-        )
+        ),
       );
     }
   }

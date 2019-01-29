@@ -57,8 +57,9 @@ class AppContext {
       _session = sessionCookie;
 
       var prefs = await SharedPreferences.getInstance();
-      prefs.setString('PARTY_SESSION', _session.toString());
-      await prefs.commit();
+      prefs.setString('PARTY_SESSION', _session.toString()).then((success) {
+        if (!success) throw new Exception('Could not save Party session key');
+      });
     }
 
     _api = new ApiBase(_session);
@@ -110,12 +111,12 @@ class AppContext {
       showDialog(
         context: context,
         barrierDismissible: true,
-        child: new AlertDialog(
+        builder: (context) => new AlertDialog(
           title: new Text('Party Error'),
           content: new Text(e.message),
-        )
+        ),
       );
-      
+
       return party;
     }
 
@@ -135,6 +136,6 @@ class AppContext {
     ).route;
     Navigator.pushReplacement(context, route);
     // ignore: invalid_use_of_protected_member
-    return route.didPush();
+    return route.didPush().then((_) => true);
   }
 }

@@ -55,8 +55,6 @@ class Spotify {
     SharedPreferences.getInstance().then((prefs) {
       prefs.setString('SPOTIFY_ACCESS_TOKEN', _accessToken);
       prefs.setString('SPOTIFY_TOKEN_EXPIRY', _tokenExpiry?.toIso8601String());
-
-      return prefs.commit();
     });
   }
 

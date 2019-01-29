@@ -38,7 +38,7 @@ class ApiBase {
     http.Response response = await _client.get(path, headers: {
       'Cookie': _session.toString(),
     });
-    String body = UTF8.decode(response.bodyBytes);
+    String body = utf8.decode(response.bodyBytes);
     handleErrors(response, body);
 
     return body;
@@ -52,7 +52,7 @@ class ApiBase {
       headers['Content-Type'] = 'application/json';
     }
     var response = await _client.post(path, headers: headers, body: body);
-    String responseBody = UTF8.decode(response.bodyBytes);
+    String responseBody = utf8.decode(response.bodyBytes);
     handleErrors(response, responseBody);
 
     return responseBody;
@@ -65,7 +65,7 @@ class ApiBase {
       error.message = 'Party could not find the resource';
       throw new ApiException.fromPartyErrors([error]);
     } else if (response.statusCode != 200 && response.headers.containsKey('content-type') && response.headers['content-type'].startsWith('application/json')) {
-      List<dynamic> errors = JSON.decode(body);
+      List<dynamic> errors = json.decode(body);
       throw new ApiException.fromPartyErrors(errors.map((json) => PartyError.fromJson(json)));
     } else if (response.statusCode != 200) {
       throw new ApiException('Party received an invalid response from the server');

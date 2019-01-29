@@ -4,7 +4,7 @@ part 'auth.g.dart';
 
 @JsonSerializable()
 class SpotifyToken extends Object with _$SpotifyTokenSerializerMixin {
-  SpotifyToken() {}
+  SpotifyToken();
   factory SpotifyToken.fromJson(Map<String, dynamic> json) => _$SpotifyTokenFromJson(json);
 
   @JsonKey(name: 'access_token')

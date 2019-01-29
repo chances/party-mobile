@@ -1,4 +1,4 @@
-import 'dart:convert';
+import 'dart:convert' as Convert;
 
 import 'package:party/api/base.dart';
 
@@ -18,7 +18,7 @@ class Endpoint {
   }
 
   Map attributes(String json) {
-    Map data = JSON.decode(json)['data'];
+    Map data = Convert.json.decode(json)['data'];
     return data['attributes'];
   }
 }
