@@ -7,16 +7,13 @@ part of 'auth.dart';
 // **************************************************************************
 
 SpotifyToken _$SpotifyTokenFromJson(Map<String, dynamic> json) {
-  return new SpotifyToken()
+  return SpotifyToken()
     ..accessToken = json['access_token'] as String
     ..tokenExpiry = json['token_expiry'] as String;
 }
 
-abstract class _$SpotifyTokenSerializerMixin {
-  String get accessToken;
-  String get tokenExpiry;
-  Map<String, dynamic> toJson() => <String, dynamic>{
-        'access_token': accessToken,
-        'token_expiry': tokenExpiry
-      };
-}
+Map<String, dynamic> _$SpotifyTokenToJson(SpotifyToken instance) =>
+    <String, dynamic>{
+      'access_token': instance.accessToken,
+      'token_expiry': instance.tokenExpiry
+    };

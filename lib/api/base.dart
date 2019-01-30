@@ -9,6 +9,7 @@ import 'package:party/api/exception.dart';
 import 'package:party/api/party.dart';
 import 'package:party/api/playback.dart';
 import 'package:party/constants.dart';
+import 'package:party/models/document.dart';
 
 typedef Future<String> Request(Uri path);
 
@@ -34,17 +35,22 @@ class ApiBase {
   Party get party => _party;
   Playback get playback => _playback;
 
-  Future<String> get(Uri path) async {
+  Future<dynamic> get(Uri path, {bool rawStringResponse = false}) async {
     http.Response response = await _client.get(path, headers: {
       'Cookie': _session.toString(),
     });
     String body = utf8.decode(response.bodyBytes);
     handleErrors(response, body);
 
+    if (!rawStringResponse) {
+      return json.decode(body);
+    }
+
     return body;
   }
 
-  Future<String> post(Uri path, [dynamic body]) async {
+  Future<dynamic> post(Uri path,
+      {dynamic body, bool rawStringResponse = false}) async {
     var headers = {
       'Cookie': _session.toString(),
     };
@@ -55,6 +61,10 @@ class ApiBase {
     String responseBody = utf8.decode(response.bodyBytes);
     handleErrors(response, responseBody);
 
+    if (!rawStringResponse) {
+      return json.decode(body);
+    }
+
     return responseBody;
   }
 
@@ -62,13 +72,16 @@ class ApiBase {
     if (response.statusCode == 404) {
       PartyError error = new PartyError();
       error.code = response.statusCode;
-      error.message = 'Party could not find the resource';
+      error.message = 'Could not find the requested resource';
       throw new ApiException.fromPartyErrors([error]);
-    } else if (response.statusCode != 200 && response.headers.containsKey('content-type') && response.headers['content-type'].startsWith('application/json')) {
-      List<dynamic> errors = json.decode(body);
-      throw new ApiException.fromPartyErrors(errors.map((json) => PartyError.fromJson(json)));
+    } else if (response.statusCode != 200 &&
+        response.headers.containsKey('content-type') &&
+        response.headers['content-type'].startsWith('application/json')) {
+      var responseJson = json.decode(body);
+      var document = ErrorDocument.fromJson(responseJson);
+      throw new ApiException.fromPartyErrors(document.errors);
     } else if (response.statusCode != 200) {
-      throw new ApiException('Party received an invalid response from the server');
+      throw new ApiException('Received an invalid response from the server');
     }
   }
 }

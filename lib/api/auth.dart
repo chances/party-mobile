@@ -1,7 +1,6 @@
 import 'dart:async';
-import 'dart:convert';
 
-import 'package:party/models/auth.dart' as models;
+import 'package:party/models.dart' as models;
 import 'package:party/api/base.dart';
 import 'package:party/api/endpoint.dart';
 
@@ -10,7 +9,7 @@ class Auth extends Endpoint {
 
   Future<models.SpotifyToken> getToken() async {
     var response = await api.get(route('/auth/token'));
-    var map = json.decode(response);
-    return models.SpotifyToken.fromJson(map);
+    var document = models.Document.fromJson(response);
+    return document.data.getData(models.SpotifyToken.fromJson);
   }
 }

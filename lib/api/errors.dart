@@ -2,10 +2,11 @@ import 'package:json_annotation/json_annotation.dart';
 
 part 'errors.g.dart';
 
-@JsonSerializable()
-class PartyError extends Object with _$PartyErrorSerializerMixin {
+@JsonSerializable(createToJson: false)
+class PartyError extends Object {
   PartyError();
-  factory PartyError.fromJson(Map<String, dynamic> json) => _$PartyErrorFromJson(json);
+  static PartyError fromJson(Map<String, dynamic> json) =>
+      _$PartyErrorFromJson(json);
 
   @JsonKey(name: 'status')
   int code;
@@ -19,10 +20,11 @@ class PartyError extends Object with _$PartyErrorSerializerMixin {
   ErrorMetadata metadata;
 }
 
-@JsonSerializable()
-class ErrorMetadata extends Object with _$ErrorMetadataSerializerMixin {
+@JsonSerializable(createToJson: false)
+class ErrorMetadata extends Object {
   ErrorMetadata();
-  factory ErrorMetadata.fromJson(Map<String, dynamic> json) => _$ErrorMetadataFromJson(json);
+  static ErrorMetadata fromJson(Map<String, dynamic> json) =>
+      _$ErrorMetadataFromJson(json);
 
   String cause;
 

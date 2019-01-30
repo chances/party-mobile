@@ -3,9 +3,9 @@ import 'package:json_annotation/json_annotation.dart';
 part 'track.g.dart';
 
 @JsonSerializable()
-class Track extends Object with _$TrackSerializerMixin {
+class Track extends Object {
   Track();
-  factory Track.fromJson(Map<String, dynamic> json) => _$TrackFromJson(json);
+  static Track fromJson(Map<String, dynamic> json) => _$TrackFromJson(json);
 
   String id;
 
@@ -36,9 +36,17 @@ class Track extends Object with _$TrackSerializerMixin {
 
   @JsonKey(name: 'contributor_id')
   int contributorId;
+
+  Map<String, dynamic> toJson() {
+    this.beganPlayingNative = this.beganPlaying.toIso8601String();
+    return _$TrackToJson(this);
+  }
 }
 
+@JsonSerializable()
 class PlayingTrack extends Track {
+  PlayingTrack();
+
   PlayingTrack.fromTrack(Track track) {
     id = track.id;
     name = track.name;
@@ -51,12 +59,8 @@ class PlayingTrack extends Track {
     contributorId = track.contributorId;
   }
 
-  factory PlayingTrack.fromJson(Map<String, dynamic> json) {
-    if (json == null) return null;
-    Track t = Track.fromJson(json);
-    PlayingTrack track = new PlayingTrack.fromTrack(t);
-    return track;
-  }
+  static PlayingTrack fromJson(Map<String, dynamic> json) =>
+      _$PlayingTrackFromJson(json);
 
   bool paused = true;
 
@@ -67,17 +71,16 @@ class PlayingTrack extends Track {
   bool get isQueued => elapsed == null;
   bool get isPlaying => !paused;
 
-  @override
   Map<String, dynamic> toJson() {
     this.beganPlayingNative = this.beganPlaying.toIso8601String();
-    return this.toJson();
+    return _$PlayingTrackToJson(this);
   }
 }
 
 @JsonSerializable()
-class TrackArtist extends Object with _$TrackArtistSerializerMixin {
+class TrackArtist extends Object {
   TrackArtist();
-  factory TrackArtist.fromJson(Map<String, dynamic> json) =>
+  static TrackArtist fromJson(Map<String, dynamic> json) =>
       _$TrackArtistFromJson(json);
 
   String id;
@@ -86,9 +89,9 @@ class TrackArtist extends Object with _$TrackArtistSerializerMixin {
 }
 
 @JsonSerializable()
-class Image extends Object with _$ImageSerializerMixin {
+class Image extends Object {
   Image();
-  factory Image.fromJson(Map<String, dynamic> json) => _$ImageFromJson(json);
+  static Image fromJson(Map<String, dynamic> json) => _$ImageFromJson(json);
 
   int height;
 

@@ -7,10 +7,10 @@ part 'party.g.dart';
 Map rawMapFromJson(Map json) => json;
 Map rawMapToJson(Map json) => json;
 
-@JsonSerializable()
-class Party extends Object with _$PartySerializerMixin {
+@JsonSerializable(createToJson: false)
+class Party extends Object {
   Party();
-  factory Party.fromJson(Map<String, dynamic> json) => _$PartyFromJson(json);
+  static Party fromJson(Map<String, dynamic> json) => _$PartyFromJson(json);
 
   @JsonKey(fromJson: rawMapFromJson, toJson: rawMapToJson)
   Map location;
@@ -22,19 +22,22 @@ class Party extends Object with _$PartySerializerMixin {
 
   List<Guest> guests;
 
-  @JsonKey(name: 'current_track', fromJson: rawMapFromJson, toJson: rawMapToJson)
-  set currentTrackJson(Map json) => currentTrack = PlayingTrack.fromJson(json);
-  @JsonKey(name: 'current_track', fromJson: rawMapFromJson, toJson: rawMapToJson)
+  @JsonKey(
+      name: 'current_track', fromJson: rawMapFromJson, toJson: rawMapToJson)
+  set currentTrackJson(Map json) =>
+      json != null ? currentTrack = PlayingTrack.fromJson(json) : null;
+  @JsonKey(
+      name: 'current_track', fromJson: rawMapFromJson, toJson: rawMapToJson)
   Map get currentTrackJson => currentTrack.toJson();
 
   @JsonKey(ignore: true)
   PlayingTrack currentTrack;
 }
 
-@JsonSerializable()
-class Guest extends Object with _$GuestSerializerMixin {
+@JsonSerializable(createToJson: false)
+class Guest extends Object {
   Guest();
-  factory Guest.fromJson(Map<String, dynamic> json) => _$GuestFromJson(json);
+  static Guest fromJson(Map<String, dynamic> json) => _$GuestFromJson(json);
 
   String name;
 
