@@ -6,7 +6,6 @@ import 'package:party/app_context.dart';
 typedef void MenuEntrySelected(String value);
 
 class Constants {
-
   static const Color colorPrimary = const Color(0xFF242424);
   static const Color colorPrimaryDark = const Color(0xFF0A0A0A);
   static const Color colorAccent = const Color(0xFF9B58B5);
@@ -23,29 +22,32 @@ class Constants {
 
   static const Color statusBarColor = colorPrimary;
 
-  static final Typography typography = new Typography(platform: TargetPlatform.android);
+  static final Typography typography =
+      new Typography(platform: TargetPlatform.android);
 
   static final loadingColorAnimation =
-    const AlwaysStoppedAnimation<Color>(colorAccent);
+      const AlwaysStoppedAnimation<Color>(colorAccent);
   static final CircularProgressIndicator loadingIndicator =
-    new CircularProgressIndicator(
-      valueColor: loadingColorAnimation,
-    );
+      new CircularProgressIndicator(
+    valueColor: loadingColorAnimation,
+  );
   static final CircularProgressIndicator loadingIndicatorWhite =
-    new CircularProgressIndicator(
-      valueColor: const AlwaysStoppedAnimation<Color>(Colors.white),
-    );
+      new CircularProgressIndicator(
+    valueColor: const AlwaysStoppedAnimation<Color>(Colors.white),
+  );
   static final Widget loading = new Column(
     mainAxisAlignment: MainAxisAlignment.center,
     crossAxisAlignment: CrossAxisAlignment.center,
-    children: [ loadingIndicator ],
+    children: [loadingIndicator],
   );
 
   static final double footerHeight = 53.0;
 
-  static const Duration trackChangeTransition = const Duration(milliseconds: 300);
+  static const Duration trackChangeTransition =
+      const Duration(milliseconds: 300);
 
-  static FadeInImage fadeTransitionImage(String image, [BoxFit fit, Duration fadeDuration = trackChangeTransition]) {
+  static FadeInImage fadeTransitionImage(String image,
+      [BoxFit fit, Duration fadeDuration = trackChangeTransition]) {
     return new FadeInImage.assetNetwork(
       image: image,
       placeholder: Assets.img_placeholder,
@@ -54,7 +56,8 @@ class Constants {
     );
   }
 
-  static FadeInImage fadeInImage(String image, [Duration fadeInDuration = const Duration(milliseconds: 250)]) {
+  static FadeInImage fadeInImage(String image,
+      [Duration fadeInDuration = const Duration(milliseconds: 250)]) {
     return new FadeInImage.assetNetwork(
       image: image,
       placeholder: Assets.img_placeholder,
@@ -65,37 +68,35 @@ class Constants {
 
   static Widget footer(BuildContext context, [bool hushed = false]) {
     var theme = Theme.of(context);
-    var textStyle = theme.textTheme.body1
-        .copyWith(decoration: TextDecoration.none);
+    var textStyle =
+        theme.textTheme.body1.copyWith(decoration: TextDecoration.none);
     if (hushed) {
       textStyle = textStyle.copyWith(color: theme.textTheme.caption.color);
     }
 
     return new Hero(
-        tag: 'spotify-power',
-        child: new Padding(
-            padding: new EdgeInsets.only(top: 8.0, bottom: 8.0),
-            child: new Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: [
-                  new Padding(
-                    padding: new EdgeInsets.only(right: 10.0),
-                    child: new Text(
-                      'Powered by',
-                      style: textStyle,
-                    ),
+      tag: 'spotify-power',
+      child: new Padding(
+          padding: new EdgeInsets.only(top: 8.0, bottom: 8.0),
+          child: new Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                new Padding(
+                  padding: new EdgeInsets.only(right: 10.0),
+                  child: new Text(
+                    'Powered by',
+                    style: textStyle,
                   ),
-                  new Opacity(
-                    opacity: hushed ? 0.6 : 1.0,
-                    child: new Image.asset(
-                      Assets.img_spotify_white,
-                      height: 37.0,
-                    ),
+                ),
+                new Opacity(
+                  opacity: hushed ? 0.6 : 1.0,
+                  child: new Image.asset(
+                    Assets.img_spotify_white,
+                    height: 37.0,
                   ),
-                ]
-            )
-        ),
+                ),
+              ])),
     );
   }
 
@@ -106,11 +107,12 @@ class Constants {
         right: 0.0,
         curve: shown ? Curves.easeOut : Curves.easeIn,
         child: footer(context, true),
-        duration: new Duration(milliseconds: 400)
-    );
+        duration: new Duration(milliseconds: 400));
   }
 
-  static Widget logoutMenu(BuildContext context, [List<PopupMenuEntry<String>> otherItems, MenuEntrySelected otherItemSelected]) {
+  static Widget logoutMenu(BuildContext context,
+      [List<PopupMenuEntry<String>> otherItems,
+      MenuEntrySelected otherItemSelected]) {
     return new PopupMenuButton(
       onSelected: (String value) {
         if (value == 'logout') {
@@ -121,7 +123,8 @@ class Constants {
         }
       },
       itemBuilder: (BuildContext context) {
-        var items = otherItems == null ? <PopupMenuEntry<String>>[] : otherItems;
+        var items =
+            otherItems == null ? <PopupMenuEntry<String>>[] : otherItems;
         items.addAll(<PopupMenuEntry<String>>[
           const PopupMenuItem(value: 'logout', child: const Text('Logout'))
         ]);
@@ -131,8 +134,9 @@ class Constants {
   }
 
   // API & Authentication
-  static const String partyApi = "http://10.0.0.20:3005";
-//  static const String partyApi = "https://party.chancesnow.me";
+  static const String partyApi = "http://10.0.0.178:3005";
+  // static const String partyApi = "http://chances-party-staging.herokuapp.com";
+  // static const String partyApi = "https://party.chancesnow.me";
 
   // Interop
   static const String mainChannel = "com.chancesnow.party";
