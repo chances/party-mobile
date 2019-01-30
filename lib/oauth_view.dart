@@ -28,7 +28,6 @@ class OAuthView {
           this.close();
         });
     _webView.onDestroy.listen((_) => _closed = true);
-    _webView.onBackPressed.listen((_) => _closed = true);
   }
 
   bool get isFinished => _finished;
@@ -40,7 +39,6 @@ class OAuthView {
     return Future.any([
       _onFinished,
       _webView.onDestroy.first,
-      _webView.onBackPressed.first
     ]);
   }
 

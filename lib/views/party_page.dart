@@ -21,9 +21,8 @@ class PartyPage extends StatefulWidget {
 
   static final handler = new Handler(
       handlerFunc: (BuildContext context, Map<String, dynamic> params) {
-        return new PartyPage();
-      }
-  );
+    return new PartyPage();
+  });
 
   @override
   _PartyPageState createState() => new _PartyPageState();
@@ -35,9 +34,9 @@ class _PartyPageState extends State<PartyPage> {
 
   _PartyPageState() {
     searchBar = new SearchBar(
-        hintText: 'Search for a song',
-        setState: setState,
-        buildDefaultAppBar: buildAppBar,
+      hintText: 'Search for a song',
+      setState: setState,
+      buildDefaultAppBar: buildAppBar,
     );
   }
 
@@ -53,9 +52,9 @@ class _PartyPageState extends State<PartyPage> {
 
   Future<PlaylistSimple> _selectPlaylist() {
     // TODO: Refactor this elsewhere?
-    return Navigator.of(context)
-        .push(new MaterialPageRoute<PlaylistSimple>(builder: (BuildContext context) {
-          return PlaylistsPage.handler.handlerFunc(context, null);
+    return Navigator.of(context).push(
+        new MaterialPageRoute<PlaylistSimple>(builder: (BuildContext context) {
+      return PlaylistsPage.handler.handlerFunc(context, null);
     }));
   }
 
@@ -64,7 +63,7 @@ class _PartyPageState extends State<PartyPage> {
     if (app.party.currentTrack == null) {
       app.party = await app.api.party.get();
     }
-    
+
     setState(() {
       app.party.currentTrack.paused = false;
     });
@@ -93,16 +92,14 @@ class _PartyPageState extends State<PartyPage> {
   @override
   Widget build(BuildContext context) {
     Widget selectedTab = new Stack(
-      children: [
-        new Center(child: Constants.loadingIndicator)
-      ],
+      children: [new Center(child: Constants.loadingIndicator)],
     );
 
     if (_selectedTab == PartyTab.music && app.hasParty) {
       selectedTab = new Stack(
         children: app.party.currentTrack == null
-          ? buildBeginPlayback(context)
-          : buildPlayer(context),
+            ? buildBeginPlayback(context)
+            : buildPlayer(context),
       );
     }
 
@@ -110,7 +107,7 @@ class _PartyPageState extends State<PartyPage> {
       selectedTab = new GuestList(app.party.guests);
     }
 
-    if (searchBar.isSearching) {
+    if (searchBar.isSearching.value) {
       selectedTab = new Column(
         children: <Widget>[
           new Expanded(child: new Center(child: new Text('Search'))),
@@ -120,64 +117,74 @@ class _PartyPageState extends State<PartyPage> {
     }
 
     var content = app.hasParty
-      ? selectedTab
-      : new Stack(children: buildStartParty(context));
+        ? selectedTab
+        : new Stack(children: buildStartParty(context));
 
     final BottomNavigationBar bottomNavBar = app.hasParty
-        ? new BottomNavigationBar(onTap: (index) {
-          setState(() {
-            _selectedTab = PartyTab.values[index];
-          });
-        },
-        currentIndex: _selectedTab.index,
-        items: [
-          new BottomNavigationBarItem(
-              icon: new Icon(Icons.music_note),
-              title: new Text('Music')
-          ),
-          new BottomNavigationBarItem(
-              icon: new Icon(Icons.people),
-              title: new Text('Guests')
-          ),
-          new BottomNavigationBarItem(
-              icon: new Icon(Icons.videogame_asset),
-              title: new Text('Games')
+        ? new BottomNavigationBar(
+            onTap: (index) {
+              setState(() {
+                _selectedTab = PartyTab.values[index];
+              });
+            },
+            currentIndex: _selectedTab.index,
+            items: [
+              new BottomNavigationBarItem(
+                icon: new Icon(Icons.music_note),
+                title: new Text('Music'),
+              ),
+              new BottomNavigationBarItem(
+                icon: new Icon(Icons.people),
+                title: new Text('Guests'),
+              ),
+              new BottomNavigationBarItem(
+                icon: new Icon(Icons.videogame_asset),
+                title: new Text('Games'),
+              )
+            ],
           )
-        ])
         : null;
 
     return new Scaffold(
       appBar: searchBar.build(context),
       body: content,
-      bottomNavigationBar: searchBar.isSearching ? null : bottomNavBar,
+      bottomNavigationBar: searchBar.isSearching.value ? null : bottomNavBar,
     );
   }
 
   AppBar buildAppBar(BuildContext context) {
     final actions = [
       app.hasParty
-        ? Constants.logoutMenu(context, <PopupMenuEntry<String>>[
-          const PopupMenuItem(value: 'end', child: const Text('End Party')),
-          const PopupMenuDivider(),
-        ], (value) async {
-          if (value == 'end') {
-            Party party = await app.endParty(context);
-            setState(() {
-              app.party = party;
-            });
-          }
-        })
-        : Constants.logoutMenu(context)
+          ? Constants.logoutMenu(
+              context,
+              <PopupMenuEntry<String>>[
+                const PopupMenuItem(
+                    value: 'end', child: const Text('End Party')),
+                const PopupMenuDivider(),
+              ],
+              (value) async {
+                if (value == 'end') {
+                  Party party = await app.endParty(context);
+                  setState(() {
+                    app.party = party;
+                  });
+                }
+              },
+            )
+          : Constants.logoutMenu(context)
     ];
 
     if (app.hasParty) {
-      actions.insert(0, new IconButton(
-        icon: new Icon(Icons.add),
-        tooltip: 'Add a song',
-        onPressed: () {
-          searchBar.beginSearch(context);
-        },
-      ));
+      actions.insert(
+        0,
+        new IconButton(
+          icon: new Icon(Icons.add),
+          tooltip: 'Add a song',
+          onPressed: () {
+            searchBar.beginSearch(context);
+          },
+        ),
+      );
     }
 
     return new AppBar(
@@ -189,26 +196,24 @@ class _PartyPageState extends State<PartyPage> {
   }
 
   List<Widget> buildLoading(BuildContext context) {
-    return [
-      new Center(child: Constants.loading)
-    ];
+    return [new Center(child: Constants.loading)];
   }
 
   List<Widget> buildStartParty(BuildContext context) {
     return [
       new Center(
           child: new Column(
-            children: [
-              new Padding(
-                padding: new EdgeInsets.only(bottom: 16.0),
-                child: new SplashPrompt('Get this party started', ['Host a party with music, games, and fun!']),
-              ),
-              new PrimaryButton('Start', onPressed: _startParty)
-            ],
-            mainAxisAlignment: MainAxisAlignment.center,
-            crossAxisAlignment: CrossAxisAlignment.center,
-          )
-      ),
+        children: [
+          new Padding(
+            padding: new EdgeInsets.only(bottom: 16.0),
+            child: new SplashPrompt('Get this party started',
+                ['Host a party with music, games, and fun!']),
+          ),
+          new PrimaryButton('Start', onPressed: _startParty)
+        ],
+        mainAxisAlignment: MainAxisAlignment.center,
+        crossAxisAlignment: CrossAxisAlignment.center,
+      )),
       new Positioned(
         bottom: 16.0,
         left: 0.0,
@@ -229,20 +234,20 @@ class _PartyPageState extends State<PartyPage> {
   List<Widget> buildBeginPlayback(BuildContext context) {
     return [
       new Center(
-          child: new Column(
-            children: [
-              new Padding(
-                padding: new EdgeInsets.only(bottom: 16.0),
-                child: new SplashPrompt(
-                  'Play some music',
-                  ['Ask your guests to contribute after the music starts.'],
-                ),
+        child: new Column(
+          children: [
+            new Padding(
+              padding: new EdgeInsets.only(bottom: 16.0),
+              child: new SplashPrompt(
+                'Play some music',
+                ['Ask your guests to contribute after the music starts.'],
               ),
-              new PrimaryButton('Shuffle Play', onPressed: _play)
-            ],
-            mainAxisAlignment: MainAxisAlignment.center,
-            crossAxisAlignment: CrossAxisAlignment.center,
-          )
+            ),
+            new PrimaryButton('Shuffle Play', onPressed: _play)
+          ],
+          mainAxisAlignment: MainAxisAlignment.center,
+          crossAxisAlignment: CrossAxisAlignment.center,
+        ),
       ),
       Constants.musicFooter(context, false)
     ];
@@ -260,7 +265,9 @@ class _PartyPageState extends State<PartyPage> {
       new Padding(
         padding: new EdgeInsets.symmetric(horizontal: 16.0),
         child: new AnimatedCrossFade(
-          crossFadeState: track.isQueued ? CrossFadeState.showFirst : CrossFadeState.showSecond,
+          crossFadeState: track.isQueued
+              ? CrossFadeState.showFirst
+              : CrossFadeState.showSecond,
           duration: Constants.trackChangeTransition,
           firstChild: new Padding(
             padding: new EdgeInsets.all(2.0),
@@ -293,24 +300,27 @@ class _PartyPageState extends State<PartyPage> {
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             new ConstrainedBox(
-              child: Constants.fadeTransitionImage(track.images.first.url, BoxFit.scaleDown),
-              constraints: new BoxConstraints(maxWidth: 180.0, minHeight: 180.0),
+              child: Constants.fadeTransitionImage(
+                  track.images.first.url, BoxFit.scaleDown),
+              constraints:
+                  new BoxConstraints(maxWidth: 180.0, minHeight: 180.0),
             ),
             new Padding(
               padding: const EdgeInsets.only(top: 8.0),
               child: new Column(
                 children: [
-                  new Text(track.name, style: Theme.of(context).textTheme.headline),
-                  new Text(track.artists.first.name, style: Theme.of(context).textTheme.subhead),
+                  new Text(track.name,
+                      style: Theme.of(context).textTheme.headline),
+                  new Text(track.artists.first.name,
+                      style: Theme.of(context).textTheme.subhead),
                   new Padding(
-                    padding: const EdgeInsets.only(top: 16.0),
-                    child: new Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: controls,
-                    )
-                  )
+                      padding: const EdgeInsets.only(top: 16.0),
+                      child: new Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: controls,
+                      ))
                 ],
-              )
+              ),
             )
           ],
         ),

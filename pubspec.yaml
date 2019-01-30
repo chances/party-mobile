@@ -16,15 +16,15 @@ dependencies:
     git:
       url: git://github.com/chances/flutter_webview_plugin.git
       ref: master
-  json_annotation: ^0.2.0
+  json_annotation: ^2.0.0
   flutter:
     sdk: flutter
 
 dev_dependencies:
 #  flutter_test: any
 #    sdk: flutter
-  build_runner: ^0.8.10
-  json_serializable: ^0.5.0
+  build_runner: ^1.1.1
+  json_serializable: ^2.0.0
 
 # For information on the generic Dart part of this file, see the
 # following page: https://www.dartlang.org/tools/pub/pubspec
