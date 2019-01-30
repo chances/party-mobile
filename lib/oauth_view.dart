@@ -16,17 +16,12 @@ class OAuthView {
   bool _closed = false;
 
   OAuthView(String loginUrl, String finishUrl)
-      :
-        _loginUrl = loginUrl,
+      : _loginUrl = loginUrl,
         _finishUrl = finishUrl,
         _webView = new FlutterWebviewPlugin() {
     _onFinished = _webView.onUrlChanged
         .firstWhere((url) => url == _finishUrl)
-        .then((_) {
-          _finished = true;
-          _closed = true;
-          this.close();
-        });
+        .then((_) => this.close);
     _webView.onDestroy.listen((_) => _closed = true);
   }
 
@@ -49,13 +44,13 @@ class OAuthView {
   }
 
   Future close() {
+    _finished = true;
+    _closed = true;
     return _webView.close();
   }
 
   Future<List<Cookie>> getCookies(String url) {
-    return _channel.invokeMethod("getCookies", {
-      'url': url
-    }).then((result) {
+    return _channel.invokeMethod("getCookies", {'url': url}).then((result) {
       if (result == null) {
         return <Cookie>[];
       }

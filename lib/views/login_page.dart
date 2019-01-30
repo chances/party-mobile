@@ -15,9 +15,8 @@ class LoginPage extends StatefulWidget {
 
   static final handler = new Handler(
       handlerFunc: (BuildContext context, Map<String, dynamic> params) {
-        return new LoginPage();
-      }
-  );
+    return new LoginPage();
+  });
 
   @override
   _LoginPageState createState() => new _LoginPageState();
@@ -31,13 +30,14 @@ class _LoginPageState extends State<LoginPage> {
   var _loggingIn = false;
 
   _LoginPageState() {
-    channel =  new BasicMessageChannel<Message>(Constants.spotifyMessageChannel, Message.codec);
+    channel = new BasicMessageChannel<Message>(
+        Constants.spotifyMessageChannel, Message.codec);
     channel.setMessageHandler((Message m) {
       // TODO: Use the spotify message channel for player messages
     });
   }
 
-  Future<Null> _login() async {
+  Future<Null> _login(BuildContext context) async {
     try {
       setState(() {
         _attemptingLogin = true;
@@ -71,23 +71,41 @@ class _LoginPageState extends State<LoginPage> {
         return;
       }
 
-      var cookies = await partyAuth.getCookies(Constants.partyApi);
+      // Ensure the auth view is fully closed
+      partyAuth.close();
+
+      setState(() {
+        _attemptingLogin = false;
+        _loggingIn = true;
+      });
+
+      // await Future.delayed(new Duration(milliseconds: 500));
+
+      var cookies =
+          await partyAuth.getCookies('${Constants.partyApi}/auth/finished');
       try {
-        var sessionCookie = cookies.firstWhere(
-                (cookie) => cookie.name == "cpSESSION"
-        );
+        var sessionCookie =
+            cookies.firstWhere((cookie) => cookie.name == "cpSESSION");
+
+        await app.login(context, sessionCookie);
+      } catch (ex) {
+        // TODO: Send error to sentry: Could not read session cookie
+
+        Scaffold.of(context).showSnackBar(new SnackBar(
+          content: new Text('Could not login.'),
+          action: SnackBarAction(
+            label: 'More Info',
+            onPressed: () => _showLoginErrorDialog(
+                context, 'Unable to retrieve session cookie.', ex),
+          ),
+        ));
 
         setState(() {
           _attemptingLogin = false;
-          _loggingIn = true;
+          _loggingIn = false;
         });
-
-        await app.login(context, sessionCookie);
-      } catch(e) {
-        // TODO: Show error dialog: Could not login
-        // TODO: Send error to sentry: Could not read session cookie
       }
-    } on PlatformException catch (e) {
+    } on Exception catch (ex) {
       app.spotify.logout(context);
 
       setState(() {
@@ -95,17 +113,58 @@ class _LoginPageState extends State<LoginPage> {
         _loggingIn = false;
       });
 
-      Scaffold.of(context).showSnackBar(new SnackBar(content: new Text(
-          'Failed to login: ${e.message}.'
-      )));
+      Scaffold.of(context).showSnackBar(new SnackBar(
+        content: new Text('Could not login.'),
+        action: SnackBarAction(
+          label: 'More Info',
+          onPressed: () => _showLoginErrorDialog(context, ex.toString()),
+        ),
+      ));
     }
+  }
+
+  Future<Null> _showLoginErrorDialog(BuildContext context, String message,
+      [Exception ex]) {
+    return showDialog(
+        context: context,
+        builder: (context) {
+          return AlertDialog(
+            title: Text('Could not Login'),
+            content: Column(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: <Widget>[
+                Text(message),
+                Padding(
+                  padding: const EdgeInsets.only(top: 8.0),
+                  child: ex != null ? Text(ex.toString()) : null,
+                ),
+              ],
+            ),
+            actions: <Widget>[
+              FlatButton(
+                child: Text('Submit Feedback'),
+                onPressed: () {
+                  Navigator.of(context).pop();
+                  // TODO: Sentry feedback form, mailto: link, or something?
+                },
+              ),
+              FlatButton(
+                child: Text('OK'),
+                onPressed: () {
+                  Navigator.of(context).pop();
+                },
+              )
+            ],
+          );
+        });
   }
 
   @override
   Widget build(BuildContext context) {
     return new Scaffold(
       body: new Stack(
-        children: [
+        children: <Widget>[
           new Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
@@ -118,10 +177,12 @@ class _LoginPageState extends State<LoginPage> {
               ),
             ],
           ),
-          new Center(
-              child: _attemptingLogin || _loggingIn
-                  ? _attemptingLogin ? null : Constants.loading
-                  : new PrimaryButton('Login with Spotify', onPressed: _login)
+          Builder(
+            builder: (context) => Center(
+                child: _attemptingLogin || _loggingIn
+                    ? _attemptingLogin ? null : Constants.loading
+                    : new PrimaryButton('Login with Spotify',
+                        onPressed: () => _login(context))),
           ),
           new Positioned(
             bottom: 0.0,

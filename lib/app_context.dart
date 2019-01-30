@@ -58,7 +58,7 @@ class AppContext {
 
       var prefs = await SharedPreferences.getInstance();
       prefs.setString('PARTY_SESSION', _session.toString()).then((success) {
-        if (!success) throw new Exception('Could not save Party session key');
+        if (!success) throw new Exception('Could not save Party session state');
       });
     }
 
@@ -71,10 +71,13 @@ class AppContext {
     this.user = user;
     this.party = await app.api.party.get();
 
-    final route = app.router.matchRoute(
-      context, '/party',
-      transitionType: TransitionType.fadeIn,
-    ).route;
+    final route = app.router
+        .matchRoute(
+          context,
+          '/party',
+          transitionType: TransitionType.fadeIn,
+        )
+        .route;
     Navigator.pushReplacement(context, route);
   }
 
@@ -112,9 +115,9 @@ class AppContext {
         context: context,
         barrierDismissible: true,
         builder: (context) => new AlertDialog(
-          title: new Text('Party Error'),
-          content: new Text(e.message),
-        ),
+              title: new Text('Party Error'),
+              content: new Text(e.message),
+            ),
       );
 
       return party;
@@ -130,10 +133,10 @@ class AppContext {
       Navigator.popUntil(context, (Route route) => route.isFirst);
     }
 
-    final route = app.router.matchRoute(
-        context, '/login',
-        transitionType: TransitionType.inFromBottom
-    ).route;
+    final route = app.router
+        .matchRoute(context, '/login',
+            transitionType: TransitionType.inFromBottom)
+        .route;
     Navigator.pushReplacement(context, route);
     // ignore: invalid_use_of_protected_member
     return route.didPush().then((_) => true);
