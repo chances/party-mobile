@@ -91,6 +91,7 @@ class _LoginPageState extends State<LoginPage> {
       } catch (ex) {
         // TODO: Send error to sentry: Could not read session cookie
 
+        // TODO: Refactor this to use the same showSnackBar as below
         Scaffold.of(context).showSnackBar(new SnackBar(
           content: new Text('Could not login.'),
           action: SnackBarAction(

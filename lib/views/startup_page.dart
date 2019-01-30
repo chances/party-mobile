@@ -11,9 +11,8 @@ class StartupPage extends StatefulWidget {
 
   static final handler = new Handler(
       handlerFunc: (BuildContext context, Map<String, dynamic> params) {
-        return new StartupPage();
-      }
-  );
+    return new StartupPage();
+  });
 
   @override
   _StartupPageState createState() => new _StartupPageState();
@@ -27,9 +26,7 @@ class _StartupPageState extends State<StartupPage> {
     if (_loaded) return;
 
     var isLoggedIn = await app.spotify.loadAndValidateSession();
-    app.user = isLoggedIn
-        ? await app.spotify.client(context).users.me()
-        : null;
+    app.user = isLoggedIn ? await app.spotify.client(context).users.me() : null;
 
     if (app.user != null) {
       app.party = await app.api.party.get();
@@ -45,16 +42,18 @@ class _StartupPageState extends State<StartupPage> {
 
     await new Future.delayed(new Duration(milliseconds: 400), () {});
 
+    // If the current Host is still logged in jump to the Party page,
+    //  otherwise navigate to the login page with a fancy fade
     final path = app.isLoggedIn ? '/party' : '/login';
     final transitionDuration = app.isLoggedIn
         ? new Duration(seconds: 0)
         : new Duration(milliseconds: 750);
 
-    final route = app.router.matchRoute(
-      context, path,
-      transitionType: TransitionType.fadeIn,
-      transitionDuration: transitionDuration
-    ).route;
+    final route = app.router
+        .matchRoute(context, path,
+            transitionType: TransitionType.fadeIn,
+            transitionDuration: transitionDuration)
+        .route;
     Navigator.pushReplacement(context, route);
   }
 
@@ -74,22 +73,23 @@ class _StartupPageState extends State<StartupPage> {
               child: new Container(
                 decoration: new BoxDecoration(
                   gradient: new LinearGradient(
-                    begin: Alignment.topLeft,
-                    end: Alignment.bottomRight,
-                    colors: [
-                      Constants.colorBrandGradientBlue,
-                      Constants.colorBrandGradientPurple,
-                      Constants.colorBrandGradientPurple,
-                    ],
-                    stops: [0.0, 0.9, 1.0]
-                  ),
+                      begin: Alignment.topLeft,
+                      end: Alignment.bottomRight,
+                      colors: [
+                        Constants.colorBrandGradientBlue,
+                        Constants.colorBrandGradientPurple,
+                        Constants.colorBrandGradientPurple,
+                      ],
+                      stops: [
+                        0.0,
+                        0.9,
+                        1.0
+                      ]),
                 ),
                 child: new Stack(children: [
                   new Center(child: Constants.loadingIndicatorWhite)
                 ]),
-              )
-          );
-        }
-    );
+              ));
+        });
   }
 }
