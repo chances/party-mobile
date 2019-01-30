@@ -64,12 +64,11 @@ class AppContext {
 
     _api = new ApiBase(_session);
 
-    var token = await _api.auth.getToken();
-    app.spotify.setToken(token.accessToken, DateTime.parse(token.tokenExpiry));
+    await _fetchSpotifyTokenAndParty().catchError((error) => throw error);
 
-    var user = await app.spotify.client(context).users.me();
-    this.user = user;
-    this.party = await app.api.party.get();
+    // Fetch the current Host's Spotify user profile
+    this.user = await app.spotify.client(context).users.me();
+    // TODO: Handle Spotify API errors
 
     final route = app.router
         .matchRoute(
@@ -126,6 +125,18 @@ class AppContext {
     // TODO: Anything else to do to end a party?
 
     return null;
+  }
+
+  /// In parallel, get the Host's Spotify access token and the current party, if any
+  Future<void> _fetchSpotifyTokenAndParty() async {
+    var getToken = _api.auth.getToken().then(
+          (token) => app.spotify.setToken(
+                token.accessToken,
+                DateTime.parse(token.tokenExpiry),
+              ),
+        );
+    var getParty = app.api.party.get().then((party) => this.party = party);
+    await Future.wait([getToken, getParty]);
   }
 
   Future<bool> _navigateToLoginPage(BuildContext context, bool popRoutes) {
