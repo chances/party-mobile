@@ -8,6 +8,7 @@ import 'package:party/api/errors.dart';
 import 'package:party/api/exception.dart';
 import 'package:party/api/party.dart';
 import 'package:party/api/playback.dart';
+import 'package:party/api/playlists.dart';
 import 'package:party/constants.dart';
 import 'package:party/models/document.dart';
 
@@ -21,6 +22,7 @@ class ApiBase {
   Auth _auth;
   Party _party;
   Playback _playback;
+  Playlists _playlists;
 
   ApiBase(this._session) {
     _client = new http.Client();
@@ -28,12 +30,14 @@ class ApiBase {
     _auth = new Auth(this);
     _party = new Party(this);
     _playback = new Playback(this);
+    _playlists = new Playlists(this);
   }
 
   Uri get baseUri => _baseUri;
   Auth get auth => _auth;
   Party get party => _party;
   Playback get playback => _playback;
+  Playlists get playlists => _playlists;
 
   Future<dynamic> get(Uri path, {bool rawStringResponse = false}) async {
     http.Response response = await _client.get(path, headers: {
