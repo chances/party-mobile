@@ -271,7 +271,10 @@ class _PartyPageState extends State<PartyPage> {
                         mainAxisSize: MainAxisSize.min,
                         children: <Widget>[
                           Container(
-                            constraints: BoxConstraints(maxHeight: 152.0),
+                            constraints: BoxConstraints(
+                              minHeight: 152.0,
+                              maxWidth: 152.0,
+                            ),
                             child: Constants.fadeInImage(
                                 snapshot.data.images.first.url),
                           ),
