@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/painting.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 
 import 'package:party/app_context.dart';
 
@@ -133,10 +134,10 @@ class Constants {
     );
   }
 
+  static const bool isProduction = bool.fromEnvironment('dart.vm.product');
+
   // API & Authentication
-  static const String partyApi = "http://10.0.0.178:3005";
-  // static const String partyApi = "http://chances-party-staging.herokuapp.com";
-  // static const String partyApi = "https://party.chancesnow.me";
+  static String get partyApi => DotEnv().env['PARTY_API'];
 
   // Interop
   static const String mainChannel = "com.chancesnow.party";

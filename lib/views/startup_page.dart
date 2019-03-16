@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:fluro/fluro.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 
 import 'package:party/app_context.dart';
 import 'package:party/constants.dart';
@@ -24,6 +25,9 @@ class _StartupPageState extends State<StartupPage> {
 
   Future<Null> _loadUser() async {
     if (_loaded) return;
+
+    await DotEnv()
+        .load(Constants.isProduction ? 'env_prod.env' : 'env_dev.env');
 
     var isLoggedIn = await app.spotify.loadAndValidateSession();
     app.user = isLoggedIn ? await app.spotify.client(context).users.me() : null;
