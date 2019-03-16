@@ -6,6 +6,7 @@ import 'package:flutter_search_bar/flutter_search_bar.dart';
 import 'package:party/models/track.dart';
 import 'package:party/views/widgets/add_to_library_button.dart';
 import 'package:party/views/widgets/guest_list.dart';
+import 'package:party/views/widgets/party/start_party.dart';
 import 'package:party/views/widgets/splash_prompt.dart';
 import 'package:spotify/spotify_io.dart';
 
@@ -121,9 +122,8 @@ class _PartyPageState extends State<PartyPage> {
       );
     }
 
-    var content = app.hasParty
-        ? selectedTab
-        : new Stack(children: buildStartParty(context));
+    var content =
+        app.hasParty ? selectedTab : StartParty(onStartPressed: _startParty);
 
     final BottomNavigationBar bottomNavBar = app.hasParty
         ? new BottomNavigationBar(
@@ -202,38 +202,6 @@ class _PartyPageState extends State<PartyPage> {
 
   List<Widget> buildLoading(BuildContext context) {
     return [new Center(child: Constants.loading)];
-  }
-
-  List<Widget> buildStartParty(BuildContext context) {
-    return [
-      new Center(
-          child: new Column(
-        children: [
-          new Padding(
-            padding: new EdgeInsets.only(bottom: 16.0),
-            child: new SplashPrompt('Get this party started',
-                ['Host a party with music, games, and fun!']),
-          ),
-          new PrimaryButton('Start', onPressed: _startParty)
-        ],
-        mainAxisAlignment: MainAxisAlignment.center,
-        crossAxisAlignment: CrossAxisAlignment.center,
-      )),
-      new Positioned(
-        bottom: 16.0,
-        left: 0.0,
-        right: 0.0,
-        child: new Row(
-          children: [
-            new RaisedButton(
-              onPressed: () {},
-              child: new Text('Previous Parties'),
-            )
-          ],
-          mainAxisAlignment: MainAxisAlignment.center,
-        ),
-      ),
-    ];
   }
 
   List<Widget> buildBeginPlayback(BuildContext context) {
