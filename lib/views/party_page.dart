@@ -3,20 +3,16 @@ import 'dart:async';
 import 'package:fluro/fluro.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_search_bar/flutter_search_bar.dart';
-import 'package:party/models/track.dart';
-import 'package:party/views/widgets/add_to_library_button.dart';
-import 'package:party/views/widgets/guest_list.dart';
-import 'package:party/views/widgets/party/start_party.dart';
-import 'package:party/views/widgets/splash_prompt.dart';
 import 'package:spotify/spotify_io.dart';
 
 import 'package:party/app_context.dart';
 import 'package:party/constants.dart';
-import 'package:party/models.dart' as models;
-import 'package:party/models/party.dart';
 import 'package:party/models/music.dart';
-import 'package:party/views/widgets/primary_button.dart';
 import 'package:party/views/playlists_page.dart';
+import 'package:party/views/widgets/add_to_library_button.dart';
+import 'package:party/views/widgets/guest_list.dart';
+import 'package:party/views/widgets/party/begin_playback.dart';
+import 'package:party/views/widgets/party/start_party.dart';
 
 class PartyPage extends StatefulWidget {
   PartyPage({Key key}) : super(key: key);
@@ -60,10 +56,6 @@ class _PartyPageState extends State<PartyPage> {
     }));
   }
 
-  Future<models.Playlist> _currentPlaylist() {
-    return app.api.playlists.get();
-  }
-
   Future<Null> _play() async {
     await app.api.playback.play(true);
     if (app.party.currentTrack == null) {
@@ -102,11 +94,9 @@ class _PartyPageState extends State<PartyPage> {
     );
 
     if (_selectedTab == PartyTab.music && app.hasParty) {
-      selectedTab = new Stack(
-        children: app.party.currentTrack == null
-            ? buildBeginPlayback(context)
-            : buildPlayer(context),
-      );
+      selectedTab = app.party.currentTrack == null
+          ? BeginPlayback(onShufflePressed: _play)
+          : new Stack(children: buildPlayer(context));
     }
 
     if (_selectedTab == PartyTab.guests && app.hasParty) {
@@ -169,7 +159,7 @@ class _PartyPageState extends State<PartyPage> {
               ],
               (value) async {
                 if (value == 'end') {
-                  Party party = await app.endParty(context);
+                  var party = await app.endParty(context);
                   setState(() {
                     app.party = party;
                   });
@@ -204,80 +194,8 @@ class _PartyPageState extends State<PartyPage> {
     return [new Center(child: Constants.loading)];
   }
 
-  List<Widget> buildBeginPlayback(BuildContext context) {
-    return [
-      new Center(
-        child: new Column(
-          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-          crossAxisAlignment: CrossAxisAlignment.center,
-          children: [
-            new Padding(
-              padding: new EdgeInsets.only(top: 16.0, bottom: 24.0),
-              child: new SplashPrompt(
-                'Play some music',
-                ['Ask your guests to contribute after the music starts.'],
-              ),
-            ),
-            FutureBuilder(
-              future: _currentPlaylist(),
-              builder: (context, AsyncSnapshot<models.Playlist> snapshot) {
-                var shuffleButton =
-                    PrimaryButton('Shuffle Playlist', onPressed: _play);
-                if (snapshot.connectionState == ConnectionState.none)
-                  return shuffleButton;
-                var loading =
-                    snapshot.connectionState == ConnectionState.active ||
-                        snapshot.connectionState == ConnectionState.waiting;
-                // TODO: Handle API errors
-                if (snapshot.hasError) return shuffleButton;
-                var durationEstimate = snapshot.hasData
-                    ? Duration(hours: snapshot.data.totalTracks * 4)
-                    : null;
-                return loading
-                    ? Constants.loadingIndicator
-                    : Column(
-                        mainAxisSize: MainAxisSize.min,
-                        children: <Widget>[
-                          Container(
-                            constraints: BoxConstraints(
-                              minHeight: 152.0,
-                              maxWidth: 152.0,
-                            ),
-                            child: Constants.fadeInImage(
-                                snapshot.data.images.first.url),
-                          ),
-                          Padding(
-                            padding: EdgeInsets.symmetric(vertical: 16.0),
-                            child: Column(
-                              children: <Widget>[
-                                Padding(
-                                  padding: const EdgeInsets.only(bottom: 4.0),
-                                  child: Text(
-                                    snapshot.data.name,
-                                    style: Theme.of(context).textTheme.title,
-                                  ),
-                                ),
-                                Text(
-                                  '~${durationEstimate.inDays} days',
-                                  style: Theme.of(context).textTheme.caption,
-                                ),
-                              ],
-                            ),
-                          ),
-                          shuffleButton,
-                        ],
-                      );
-              },
-            ),
-          ],
-        ),
-      ),
-      Constants.musicFooter(context, false)
-    ];
-  }
-
   List<Widget> buildPlayer(BuildContext context) {
-    PlayingTrack track = app.party.currentTrack;
+    var track = app.party.currentTrack;
 
     var controls = [
       new AddToLibraryButton(app, track, addedToLibrary: () {
