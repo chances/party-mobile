@@ -4,15 +4,12 @@ description: Party mobile client.
 dependencies:
   flutter_dotenv: ^2.0.1
   fluro: ^1.1.0
-  shared_preferences: ^0.4.0
+  shared_preferences: ^0.5.3
   flutter_search_bar:
     git:
       url: git://github.com/ArcticZeroo/flutter-search-bar.git
       ref: master
-  flutter_webview_plugin:
-    git:
-      url: git://github.com/chances/flutter_webview_plugin.git
-      ref: master
+  webview_flutter: ^0.3.13
   spotify:
     git:
       url: git://github.com/chances/spotify-dart.git

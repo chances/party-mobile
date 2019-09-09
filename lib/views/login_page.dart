@@ -7,7 +7,7 @@ import 'package:flutter/services.dart';
 import 'package:party/app_context.dart';
 import 'package:party/constants.dart';
 import 'package:party/models/interop/message.dart';
-import 'package:party/oauth_view.dart';
+import 'package:party/views/auth_page.dart';
 import 'package:party/views/widgets/primary_button.dart';
 
 class LoginPage extends StatefulWidget {
@@ -54,25 +54,10 @@ class _LoginPageState extends State<LoginPage> {
         return;
       }
 
-      var partyAuth = new OAuthView(
-        '${Constants.partyApi}/auth/mobile',
-        '${Constants.partyApi}/auth/finished',
-      );
-      partyAuth.start();
-      await partyAuth.onClosed;
-      if (partyAuth.isCancelled) {
-        // Auth was cancelled purposefully or by error
-        setState(() {
-          _attemptingLogin = false;
-        });
-
-        // TODO: Detect failed logins
-
-        return;
-      }
-
-      // Ensure the auth view is fully closed
-      partyAuth.close();
+      await Navigator.of(context)
+          .push(new MaterialPageRoute<Null>(builder: (BuildContext context) {
+        return AuthPage.handler.handlerFunc(context, null);
+      }));
 
       setState(() {
         _attemptingLogin = false;
@@ -82,7 +67,7 @@ class _LoginPageState extends State<LoginPage> {
       // await Future.delayed(new Duration(milliseconds: 500));
 
       var cookies =
-          await partyAuth.getCookies('${Constants.partyApi}/auth/finished');
+          await AuthPage.getCookies('${Constants.partyApi}/auth/finished');
       try {
         var sessionCookie =
             cookies.firstWhere((cookie) => cookie.name == "cpSESSION");
@@ -91,20 +76,7 @@ class _LoginPageState extends State<LoginPage> {
       } catch (ex) {
         // TODO: Send error to sentry: Could not read session cookie
 
-        // TODO: Refactor this to use the same showSnackBar as below
-        Scaffold.of(context).showSnackBar(new SnackBar(
-          content: new Text('Could not login.'),
-          action: SnackBarAction(
-            label: 'More Info',
-            onPressed: () => _showLoginErrorDialog(
-                context, 'Unable to retrieve session cookie.', ex),
-          ),
-        ));
-
-        setState(() {
-          _attemptingLogin = false;
-          _loggingIn = false;
-        });
+        throw Exception('Unable to retrieve session cookie.');
       }
     } on Exception catch (ex) {
       app.spotify.logout(context);
