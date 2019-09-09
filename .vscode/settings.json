@@ -22,7 +22,9 @@
         "yml"
     ],
     "cSpell.words": [
-        "fluro"
+        "Stateful",
+        "fluro",
+        "webview"
     ],
     "editor.formatOnSave": true,
     "editor.formatOnPaste": true
