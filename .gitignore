@@ -9,6 +9,7 @@
 build/
 android/gen/
 ios/.generated/
+ios/Flutter/flutter_export_environment.sh
 out/
 packages
 pubspec.lock
