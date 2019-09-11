@@ -54,10 +54,19 @@ class _LoginPageState extends State<LoginPage> {
         return;
       }
 
-      await Navigator.of(context)
-          .push(new MaterialPageRoute<Null>(builder: (BuildContext context) {
+      var loggedIn = await Navigator.of(context)
+          .push(new MaterialPageRoute<bool>(builder: (BuildContext context) {
         return AuthPage.handler.handlerFunc(context, null);
       }));
+
+      // Auth page didn't login (e.g. user pressed back), reset login page
+      if (loggedIn == null || !loggedIn) {
+        setState(() {
+          _attemptingLogin = false;
+          _loggingIn = false;
+        });
+        return;
+      }
 
       setState(() {
         _attemptingLogin = false;

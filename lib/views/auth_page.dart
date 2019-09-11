@@ -8,6 +8,9 @@ import 'package:webview_flutter/webview_flutter.dart';
 
 import 'package:party/constants.dart';
 
+// Fix for missing activity context for autofill:
+// https://github.com/flutter/flutter/issues/25767#issuecomment-480567263
+
 class AuthPage extends StatefulWidget {
   @override
   _AuthPageState createState() => new _AuthPageState();
@@ -40,10 +43,9 @@ class _AuthPageState extends State<AuthPage> {
 
   _AuthPageState() {
     _cookieManager.clearCookies();
-    _urlChanged.stream.firstWhere((url) => url == finishUrl).then((_) => {
-          // TODO: Set the app auth token
-          Navigator.of(this.context).pop()
-        });
+    _urlChanged.stream
+        .firstWhere((url) => url == finishUrl)
+        .then((_) => Navigator.of(this.context).pop(true));
   }
 
   @override
