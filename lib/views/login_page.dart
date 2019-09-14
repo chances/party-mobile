@@ -144,35 +144,45 @@ class _LoginPageState extends State<LoginPage> {
 
   @override
   Widget build(BuildContext context) {
-    return new Scaffold(
-      body: new Stack(
-        children: <Widget>[
-          new Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              new Padding(
-                padding: new EdgeInsets.only(top: 16.0),
-                child: new Image.asset(
-                  Assets.img_party_logo,
-                  width: 300.0,
-                ),
+    var theme = Theme.of(context);
+    return Scaffold(
+      body: SafeArea(
+        child: Stack(
+          children: <Widget>[
+            Padding(
+              padding: const EdgeInsets.only(top: 16.0),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Image.asset(
+                    Assets.img_tunage_icon,
+                    width: 50.0,
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.only(left: 8.0),
+                    child: Text(
+                      'Tunage',
+                      style: theme.textTheme.headline,
+                    ),
+                  )
+                ],
               ),
-            ],
-          ),
-          Builder(
-            builder: (context) => Center(
-                child: _attemptingLogin || _loggingIn
-                    ? _attemptingLogin ? null : Constants.loading
-                    : new PrimaryButton('Login with Spotify',
-                        onPressed: () => _login(context))),
-          ),
-          new Positioned(
-            bottom: 0.0,
-            left: 0.0,
-            right: 0.0,
-            child: Constants.footer(context),
-          ),
-        ],
+            ),
+            Builder(
+              builder: (context) => Center(
+                  child: _attemptingLogin || _loggingIn
+                      ? _attemptingLogin ? null : Constants.loading
+                      : PrimaryButton('Login with Spotify',
+                          onPressed: () => _login(context))),
+            ),
+            Positioned(
+              bottom: 0.0,
+              left: 0.0,
+              right: 0.0,
+              child: Constants.footer(context),
+            ),
+          ],
+        ),
       ),
     );
   }
