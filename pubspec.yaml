@@ -9,7 +9,7 @@ dependencies:
     git:
       url: git://github.com/ArcticZeroo/flutter-search-bar.git
       ref: master
-  webview_flutter: ^0.3.13
+  flutter_appauth: ^0.8.3
   spotify:
     git:
       url: git://github.com/chances/spotify-dart.git

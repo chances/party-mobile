@@ -7,7 +7,7 @@ import 'package:flutter/services.dart';
 import 'package:party/app_context.dart';
 import 'package:party/constants.dart';
 import 'package:party/models/interop/message.dart';
-import 'package:party/views/auth_page.dart';
+import 'package:party/services/auth.dart';
 import 'package:party/views/widgets/primary_button.dart';
 
 class LoginPage extends StatefulWidget {
@@ -54,10 +54,8 @@ class _LoginPageState extends State<LoginPage> {
         return;
       }
 
-      var loggedIn = await Navigator.of(context)
-          .push(new MaterialPageRoute<bool>(builder: (BuildContext context) {
-        return AuthPage.handler.handlerFunc(context, null);
-      }));
+      var authResult = await Auth.withSpotify();
+      var loggedIn = authResult != null;
 
       // Auth page didn't login (e.g. user pressed back), reset login page
       if (loggedIn == null || !loggedIn) {
@@ -75,8 +73,14 @@ class _LoginPageState extends State<LoginPage> {
 
       // await Future.delayed(new Duration(milliseconds: 500));
 
-      var cookies =
-          await AuthPage.getCookies('${Constants.partyApi}/auth/finished');
+      print('');
+      print(authResult.tokenType);
+      print(authResult.accessToken);
+      print('');
+
+      // TODO: Sync tokens with Party API
+
+      var cookies = [];
       try {
         var sessionCookie =
             cookies.firstWhere((cookie) => cookie.name == "cpSESSION");
@@ -170,8 +174,8 @@ class _LoginPageState extends State<LoginPage> {
             ),
             Builder(
               builder: (context) => Center(
-                  child: _attemptingLogin || _loggingIn
-                      ? _attemptingLogin ? null : Constants.loading
+                  child: _loggingIn
+                      ? Constants.loading
                       : PrimaryButton('Login with Spotify',
                           onPressed: () => _login(context))),
             ),

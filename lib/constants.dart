@@ -17,8 +17,9 @@ class Constants {
           .firstWhere((element) => element.toString() == env['MODE'])
       : Environment.Production;
   // API & Authentication
-  static String get partyApi =>
-      env.containsKey('PARTY_API') ? env['PARTY_API'] : 'api.tunage.app';
+  static String get partyApi => env.containsKey('PARTY_API')
+      ? env['PARTY_API']
+      : 'https://api.tunage.app';
 
   // Interop
   static const String mainChannel = "com.chancesnow.party";
