@@ -26,9 +26,6 @@ class _StartupPageState extends State<StartupPage> {
   Future<Null> _loadUser() async {
     if (_loaded) return;
 
-    await DotEnv()
-        .load(Constants.isProduction ? 'env_prod.env' : 'env_dev.env');
-
     var isLoggedIn = await app.spotify.loadAndValidateSession();
     app.user = isLoggedIn ? await app.spotify.client(context).users.me() : null;
 

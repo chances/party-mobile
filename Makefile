@@ -6,7 +6,7 @@ debug:
 
 .PHONY: build
 build:
-	flutter build apk --release
+	flutter build apk -t lib/main.prod.dart --target-platform android-arm,android-arm64,android-x64 --split-per-abi
 
 .PHONY: gen-json
 gen-json:

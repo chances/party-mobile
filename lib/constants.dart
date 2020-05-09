@@ -4,9 +4,30 @@ import 'package:flutter_dotenv/flutter_dotenv.dart';
 
 import 'package:party/app_context.dart';
 
+enum Environment { Production, Staging, Development }
+
 typedef void MenuEntrySelected(String value);
 
 class Constants {
+  // Environment Config
+  static Map<String, String> get env => DotEnv().env;
+  static Environment get environment => env.containsKey('MODE') &&
+          Environment.values.map((e) => e.toString()).contains(env['MODE'])
+      ? Environment.values
+          .firstWhere((element) => element.toString() == env['MODE'])
+      : Environment.Production;
+  // API & Authentication
+  static String get partyApi =>
+      env.containsKey('PARTY_API') ? env['PARTY_API'] : 'api.tunage.app';
+
+  // Interop
+  static const String mainChannel = "com.chancesnow.party";
+  static const String mainMessageChannel = "com.chancesnow.party/messages";
+  static const String spotifyChannel = "com.chancesnow.party/spotify";
+  static const String spotifyMessageChannel =
+      "com.chancesnow.party/spotify/messages";
+
+  // Theme
   static const Color colorPrimary = const Color(0xFF242424);
   static const Color colorPrimaryDark = const Color(0xFF0A0A0A);
   static const Color colorAccent = const Color(0xFF9B58B5);
@@ -133,16 +154,4 @@ class Constants {
       },
     );
   }
-
-  static const bool isProduction = bool.fromEnvironment('dart.vm.product');
-
-  // API & Authentication
-  static String get partyApi => DotEnv().env['PARTY_API'];
-
-  // Interop
-  static const String mainChannel = "com.chancesnow.party";
-  static const String mainMessageChannel = "com.chancesnow.party/messages";
-  static const String spotifyChannel = "com.chancesnow.party/spotify";
-  static const String spotifyMessageChannel =
-      "com.chancesnow.party/spotify/messages";
 }

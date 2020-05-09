@@ -19,8 +19,6 @@ dependencies:
     sdk: flutter
 
 dev_dependencies:
-#  flutter_test: any
-#    sdk: flutter
   build_runner: ^1.1.1
   json_serializable: ^2.0.0
 
@@ -34,7 +32,7 @@ flutter:
     - assets/images/
     - env_dev.env
     - env_prod.env
-
+    - env_stage.env
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.io/assets-and-images/#resolution-aware.
 
@@ -58,5 +56,5 @@ flutter:
   #       - asset: fonts/TrajanPro_Bold.ttf
   #         weight: 700
   #
-  # For details regarding fonts from package dependencies, 
+  # For details regarding fonts from package dependencies,
   # see https://flutter.io/custom-fonts/#from-packages
