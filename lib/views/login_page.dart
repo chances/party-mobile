@@ -23,10 +23,9 @@ class LoginPage extends StatefulWidget {
 }
 
 class _LoginPageState extends State<LoginPage> {
-  static const platform = const MethodChannel('com.chancesnow.party');
+  static const platform = const MethodChannel('com.chancesnow.tunage');
   BasicMessageChannel<Message> channel;
 
-  var _attemptingLogin = false;
   var _loggingIn = false;
 
   _LoginPageState() {
@@ -39,17 +38,10 @@ class _LoginPageState extends State<LoginPage> {
 
   Future<Null> _login(BuildContext context) async {
     try {
-      setState(() {
-        _attemptingLogin = true;
-      });
+      setState(() => _loggingIn = true);
 
       if (app.isLoggedIn) {
         await app.login(context);
-
-        setState(() {
-          _attemptingLogin = false;
-          _loggingIn = true;
-        });
 
         return;
       }
@@ -58,48 +50,35 @@ class _LoginPageState extends State<LoginPage> {
       var loggedIn = authResult != null;
 
       // Auth page didn't login (e.g. user pressed back), reset login page
-      if (loggedIn == null || !loggedIn) {
-        setState(() {
-          _attemptingLogin = false;
-          _loggingIn = false;
-        });
+      if (!loggedIn) {
+        setState(() => _loggingIn = false);
         return;
       }
 
-      setState(() {
-        _attemptingLogin = false;
-        _loggingIn = true;
-      });
+      await Future.delayed(new Duration(milliseconds: 500));
 
-      // await Future.delayed(new Duration(milliseconds: 500));
-
-      print('');
-      print(authResult.tokenType);
-      print(authResult.accessToken);
-      print('');
-
-      // TODO: Sync tokens with Party API
-
-      var cookies = [];
       try {
-        var sessionCookie =
-            cookies.firstWhere((cookie) => cookie.name == "cpSESSION");
+        print('');
+        print(authResult.tokenType);
+        print(authResult.accessToken);
+        print('');
 
-        await app.login(context, sessionCookie);
+        // TODO: Exchange tokens with Party API
+        throw UnimplementedError('TODO: Exchange tokens with Party API');
+
+        // await app.login(context, authResult.accessToken);
       } catch (ex) {
-        // TODO: Send error to sentry: Could not read session cookie
+        // TODO: Send exception to Sentry
 
-        throw Exception('Unable to retrieve session cookie.');
+        throw Exception('Unable to exchange authorization with Tunage API.');
       }
     } on Exception catch (ex) {
       app.spotify.logout(context);
 
-      setState(() {
-        _attemptingLogin = false;
-        _loggingIn = false;
-      });
+      setState(() => _loggingIn = false);
 
       Scaffold.of(context).showSnackBar(new SnackBar(
+        duration: Duration(seconds: 5),
         content: new Text('Could not login.'),
         action: SnackBarAction(
           label: 'More Info',

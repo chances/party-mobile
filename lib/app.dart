@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
@@ -13,6 +15,15 @@ class PartyApp extends StatelessWidget {
   PartyApp() {
     WidgetsFlutterBinding.ensureInitialized();
     SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]);
+
+    if (Constants.isProduction) {
+      // TODO: Log irrecoverable errors to Sentry
+      FlutterError.onError = (_) => exit(1);
+      ErrorWidget.builder = (FlutterErrorDetails details) {
+        // TODO: Update app's state with a nice message like [LoginPage._showLoginErrorDialog]
+        return ErrorWidget(details.exception);
+      };
+    }
 
     app.router.define("/", handler: StartupPage.handler);
     app.router.define("/login", handler: LoginPage.handler);

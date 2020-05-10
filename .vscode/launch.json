@@ -8,7 +8,11 @@
             "name": "Tunage App",
             "type": "dart",
             "request": "launch",
-            "program": "lib/main.dart"
+            "program": "lib/main.dart",
+            "args": [
+                "--dart-define=AUTH_ZERO_DOMAIN=${env:AUTH_ZERO_DOMAIN}",
+                "--dart-define=AUTH_ZERO_CLIENT_ID=${env:AUTH_ZERO_CLIENT_ID}"
+            ]
         },
     ]
 }

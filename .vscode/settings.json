@@ -23,10 +23,12 @@
     ],
     "cSpell.words": [
         "Stateful",
+        "appauth",
         "fluro",
         "tunage",
         "webview"
     ],
     "editor.formatOnSave": true,
-    "editor.formatOnPaste": true
+    "editor.formatOnPaste": true,
+    "todo-tree.regex.regex": "((//|#|<!--|;|/\\*|^|')\\s*($TAGS)|^\\s*- \\[ \\])"
 }

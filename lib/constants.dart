@@ -8,6 +8,40 @@ enum Environment { Production, Staging, Development }
 
 typedef void MenuEntrySelected(String value);
 
+const _authDomain =
+    String.fromEnvironment('AUTH_ZERO_DOMAIN', defaultValue: null);
+const _authClientId =
+    String.fromEnvironment('AUTH_ZERO_CLIENT_ID', defaultValue: null);
+
+String _fromEnvironmentOrDie(String key, String value) {
+  if (value == null || value.length == 0) {
+    var message = StringBuffer();
+    message.write("Expected compile-time environment declaration '$key'");
+    message.writeln(", i.e. --dart-define=$key=<value>");
+    if (Constants.isProduction) {
+      throw new StateError(message.toString());
+    } else {
+      throw new AssertionError(message.toString());
+    }
+  }
+  return value;
+}
+
+class AuthorizationConstants {
+  static String _domain =
+      _fromEnvironmentOrDie('AUTH_ZERO_DOMAIN', _authDomain);
+  static String _clientId =
+      _fromEnvironmentOrDie('AUTH_ZERO_CLIENT_ID', _authClientId);
+
+  String domain = _domain;
+  String clientId = _clientId;
+  String tokenEndpoint = '$_domain/oauth/token';
+
+  String authorizeWithSpotifyCallback = 'tunage://auth/callback';
+  String authorizeWithSpotifyEndpoint =
+      '$_authDomain/authorize/?connection=Spotify-Tunage';
+}
+
 class Constants {
   // Environment Config
   static Map<String, String> get env => DotEnv().env;
@@ -15,21 +49,23 @@ class Constants {
           Environment.values.map((e) => e.toString()).contains(env['MODE'])
       ? Environment.values
           .firstWhere((element) => element.toString() == env['MODE'])
-      : Environment.Production;
-  static bool isProduction = bool.fromEnvironment('dart.vm.product') &&
-      environment == Environment.Production;
+      : bool.fromEnvironment('dart.vm.product')
+          ? Environment.Production
+          : Environment.Development;
+  static bool isProduction = environment == Environment.Production;
 
-  // API & Authentication
+  // Authentication & API
+  static var auth = AuthorizationConstants();
   static String get partyApi => env.containsKey('PARTY_API')
       ? env['PARTY_API']
       : 'https://api.tunage.app';
 
   // Interop
-  static const String mainChannel = "com.chancesnow.party";
-  static const String mainMessageChannel = "com.chancesnow.party/messages";
-  static const String spotifyChannel = "com.chancesnow.party/spotify";
+  static const String mainChannel = "com.chancesnow.tunage";
+  static const String mainMessageChannel = "com.chancesnow.tunage/messages";
+  static const String spotifyChannel = "com.chancesnow.tunage/spotify";
   static const String spotifyMessageChannel =
-      "com.chancesnow.party/spotify/messages";
+      "com.chancesnow.tunage/spotify/messages";
 
   // Theme
   static const Color colorPrimary = const Color(0xFF242424);

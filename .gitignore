@@ -1,6 +1,9 @@
 android/key.properties
 android/app/**/*.aab
 
+.env
+.envrc
+
 .DS_Store
 .atom/
 .idea

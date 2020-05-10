@@ -6,19 +6,15 @@ class Auth {
     try {
       var appAuth = FlutterAppAuth();
       return await appAuth.authorizeAndExchangeCode(AuthorizationTokenRequest(
-        'party_api',
-        'tunage://auth/callback',
-        clientSecret: 'tunage_secrets',
+        Constants.auth.clientId,
+        Constants.auth.authorizeWithSpotifyCallback,
         serviceConfiguration: AuthorizationServiceConfiguration(
-          'https://accounts.spotify.com/authorize',
-          'https://accounts.spotify.com/api/token',
+          Constants.auth.authorizeWithSpotifyEndpoint,
+          Constants.auth.tokenEndpoint,
         ),
         scopes: [
-          'user-read-private',
-          'user-library-read',
-          'user-library-modify',
-          'playlist-read-private',
-          'playlist-read-collaborative',
+          'openid',
+          'name',
         ],
       ));
     } on Exception catch (ex) {
