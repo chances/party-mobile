@@ -1,4 +1,4 @@
-package com.chancesnow.party.interop;
+package com.chancesnow.tunage.interop;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;

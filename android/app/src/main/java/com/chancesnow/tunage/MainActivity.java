@@ -1,4 +1,4 @@
-package com.chancesnow.party;
+package com.chancesnow.tunage;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -9,9 +9,9 @@ import android.util.Log;
 import android.view.View;
 import android.webkit.CookieManager;
 
-import com.chancesnow.party.interop.Message;
-import com.chancesnow.party.interop.SetAccessTokenStateMessage;
-import com.chancesnow.party.interop.SetLoginStateMessage;
+import com.chancesnow.tunage.interop.Message;
+import com.chancesnow.tunage.interop.SetAccessTokenStateMessage;
+import com.chancesnow.tunage.interop.SetLoginStateMessage;
 import com.spotify.sdk.android.authentication.AuthenticationClient;
 import com.spotify.sdk.android.authentication.AuthenticationRequest;
 import com.spotify.sdk.android.authentication.AuthenticationResponse;
@@ -29,10 +29,10 @@ public class MainActivity extends FlutterActivity {
   private static final int SPOTIFY_AUTH_REQUEST_CODE = 2977; // Tel keys: C-X-S-S
   private static final String CLIENT_ID = "658e37b135ea40bcabd7b3c61c8070f6";
   private static final String REDIRECT_URI = "chancesparty://callback";
-  private static final String MAIN_CHANNEL = "com.chancesnow.party";
-  private static final String MAIN_MESSAGE_CHANNEL = "com.chancesnow.party/messages";
-  private static final String SPOTIFY_CHANNEL = "com.chancesnow.party/spotify";
-  private static final String SPOTIFY_MESSAGE_CHANNEL = "com.chancesnow.party/spotify/messages";
+  private static final String MAIN_CHANNEL = "com.chancesnow.tunage";
+  private static final String MAIN_MESSAGE_CHANNEL = "com.chancesnow.tunage/messages";
+  private static final String SPOTIFY_CHANNEL = "com.chancesnow.tunage/spotify";
+  private static final String SPOTIFY_MESSAGE_CHANNEL = "com.chancesnow.tunage/spotify/messages";
 
   private BasicMessageChannel mMainChannel;
   private BasicMessageChannel mSpotifyChannel;

@@ -1,4 +1,4 @@
-package com.chancesnow.party.interop;
+package com.chancesnow.tunage.interop;
 
 /**
  * Created by chances on 4/7/17.

@@ -1,4 +1,4 @@
-package com.chancesnow.party.interop;
+package com.chancesnow.tunage.interop;
 
 import java.nio.ByteBuffer;
 import java.util.HashMap;
