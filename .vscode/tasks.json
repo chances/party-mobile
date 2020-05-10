@@ -1,0 +1,25 @@
+{
+    // See https://go.microsoft.com/fwlink/?LinkId=733558
+    // for the documentation about the tasks.json format
+    "version": "2.0.0",
+    "tasks": [
+        {
+            "label": "Build",
+            "type": "shell",
+            "command": "flutter",
+            "args": [
+                "build",
+                "aot",
+                "--dart-define=AUTH_ZERO_DOMAIN=${env:AUTH_ZERO_DOMAIN}",
+                "--dart-define=AUTH_ZERO_CLIENT_ID=${env:AUTH_ZERO_CLIENT_ID}"
+            ],
+            "problemMatcher": [
+                "$dart-pub-build_runner"
+            ],
+            "group": {
+                "kind": "build",
+                "isDefault": true
+            }
+        }
+    ]
+}
