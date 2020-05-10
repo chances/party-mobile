@@ -1,3 +1,6 @@
+android/key.properties
+android/app/**/*.aab
+
 .DS_Store
 .atom/
 .idea
