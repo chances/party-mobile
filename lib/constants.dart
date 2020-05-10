@@ -16,6 +16,9 @@ class Constants {
       ? Environment.values
           .firstWhere((element) => element.toString() == env['MODE'])
       : Environment.Production;
+  static bool isProduction = bool.fromEnvironment('dart.vm.product') &&
+      environment == Environment.Production;
+
   // API & Authentication
   static String get partyApi => env.containsKey('PARTY_API')
       ? env['PARTY_API']
