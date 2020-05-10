@@ -25,6 +25,7 @@
         "Stateful",
         "appauth",
         "fluro",
+        "prefs",
         "tunage",
         "webview"
     ],

@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:flutter/widgets.dart';
+import 'package:party/constants.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:spotify/spotify_io.dart';
 
@@ -19,8 +20,8 @@ class Spotify {
   SpotifyApi _client;
   bool _loggedOutAutomatically = false;
 
-  bool get isLoggedIn => _accessToken != null &&
-      _tokenExpiry != null && !isTokenExpired;
+  bool get isLoggedIn =>
+      _accessToken != null && _tokenExpiry != null && !isTokenExpired;
   String get accessToken => _accessToken;
   DateTime get tokenExpiry => _tokenExpiry;
   int get expiresIn => tokenExpiry.difference(new DateTime.now()).inSeconds;
@@ -34,9 +35,8 @@ class Spotify {
       return null;
     }
     if (_client == null) {
-      _client = new SpotifyApi(SpotifyApiCredentials.implicitGrant(
-          accessToken, expiresIn
-      ));
+      _client = new SpotifyApi(
+          SpotifyApiCredentials.implicitGrant(accessToken, expiresIn));
     }
     return _client;
   }
@@ -47,14 +47,14 @@ class Spotify {
 
     if (isLoggedIn && _client != null) {
       // TODO: Add update token call to spotify-dart?
-      _client = new SpotifyApi(SpotifyApiCredentials.implicitGrant(
-          accessToken, expiresIn
-      ));
+      _client = new SpotifyApi(
+          SpotifyApiCredentials.implicitGrant(accessToken, expiresIn));
     }
 
     SharedPreferences.getInstance().then((prefs) {
-      prefs.setString('SPOTIFY_ACCESS_TOKEN', _accessToken);
-      prefs.setString('SPOTIFY_TOKEN_EXPIRY', _tokenExpiry?.toIso8601String());
+      prefs.setString(Constants.prefs.spotifyAccessToken, _accessToken);
+      prefs.setString(
+          Constants.prefs.spotifyTokenExpiry, _tokenExpiry?.toIso8601String());
     });
   }
 
@@ -69,11 +69,14 @@ class Spotify {
   Future<bool> loadAndValidateSession() {
     return SharedPreferences.getInstance().then((prefs) {
       try {
-        final accessToken = prefs.getString('SPOTIFY_ACCESS_TOKEN');
-        final tokenExpiryString = prefs.getString('SPOTIFY_TOKEN_EXPIRY');
+        final accessToken = prefs.getString(Constants.prefs.spotifyAccessToken);
+        final tokenExpiryString =
+            prefs.getString(Constants.prefs.spotifyTokenExpiry);
 
-        if (accessToken != null && accessToken.isNotEmpty &&
-          tokenExpiryString != null && tokenExpiryString.isNotEmpty) {
+        if (accessToken != null &&
+            accessToken.isNotEmpty &&
+            tokenExpiryString != null &&
+            tokenExpiryString.isNotEmpty) {
           _accessToken = accessToken;
           _tokenExpiry = DateTime.parse(tokenExpiryString);
 

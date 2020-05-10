@@ -16,7 +16,7 @@ class PartyApp extends StatelessWidget {
     WidgetsFlutterBinding.ensureInitialized();
     SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]);
 
-    if (Constants.isProduction) {
+    if (Constants.env.isProduction) {
       // TODO: Log irrecoverable errors to Sentry
       FlutterError.onError = (_) => exit(1);
       ErrorWidget.builder = (FlutterErrorDetails details) {
@@ -29,7 +29,7 @@ class PartyApp extends StatelessWidget {
     app.router.define("/login", handler: LoginPage.handler);
     app.router.define("/party", handler: PartyPage.handler);
     app.router.define("/playlists", handler: PlaylistsPage.handler);
-    if (!Constants.isProduction) app.router.printTree();
+    if (!Constants.env.isProduction) app.router.printTree();
   }
 
   @override
