@@ -2,7 +2,7 @@ import 'package:json_annotation/json_annotation.dart';
 
 part 'errors.g.dart';
 
-@JsonSerializable(createToJson: false)
+@JsonSerializable()
 class PartyError extends Object {
   PartyError();
   static PartyError fromJson(Map<String, dynamic> json) =>
@@ -18,9 +18,11 @@ class PartyError extends Object {
 
   @JsonKey(name: 'meta')
   ErrorMetadata metadata;
+
+  Map<String, dynamic> toJson() => _$PartyErrorToJson(this);
 }
 
-@JsonSerializable(createToJson: false)
+@JsonSerializable()
 class ErrorMetadata extends Object {
   ErrorMetadata();
   static ErrorMetadata fromJson(Map<String, dynamic> json) =>
@@ -29,4 +31,6 @@ class ErrorMetadata extends Object {
   String cause;
 
   String details;
+
+  Map<String, dynamic> toJson() => _$ErrorMetadataToJson(this);
 }

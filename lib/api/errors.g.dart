@@ -16,8 +16,19 @@ PartyError _$PartyErrorFromJson(Map<String, dynamic> json) {
         : ErrorMetadata.fromJson(json['meta'] as Map<String, dynamic>);
 }
 
+Map<String, dynamic> _$PartyErrorToJson(PartyError instance) =>
+    <String, dynamic>{
+      'status': instance.code,
+      'title': instance.title,
+      'detail': instance.message,
+      'meta': instance.metadata
+    };
+
 ErrorMetadata _$ErrorMetadataFromJson(Map<String, dynamic> json) {
   return ErrorMetadata()
     ..cause = json['cause'] as String
     ..details = json['details'] as String;
 }
+
+Map<String, dynamic> _$ErrorMetadataToJson(ErrorMetadata instance) =>
+    <String, dynamic>{'cause': instance.cause, 'details': instance.details};
