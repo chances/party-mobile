@@ -6,6 +6,7 @@ dependencies:
   flutter_dotenv: ^2.0.1
   shared_preferences: ^0.5.3
   flutter_appauth: ^0.8.3
+  jose: ^0.1.2+1
   fluro: ^1.1.0
   flutter_search_bar:
     git:

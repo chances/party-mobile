@@ -13,4 +13,11 @@ class ApiException implements Exception {
     serverErrors = errors;
     print(message);
   }
+
+  String toString() {
+    var serverErrorMessages =
+        serverErrors?.map((e) => '${e.title}: ${e.message}') ?? [];
+    var errors = serverErrorMessages.join('\n');
+    return serverErrorMessages.length > 0 ? '$message\n\n$errors' : message;
+  }
 }

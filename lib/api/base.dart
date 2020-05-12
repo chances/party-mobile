@@ -1,6 +1,5 @@
 import 'dart:async';
 import 'dart:convert';
-import 'dart:io';
 
 import 'package:http/http.dart' as http;
 import 'package:party/api/auth.dart';
@@ -15,7 +14,7 @@ import 'package:party/models/document.dart';
 typedef Future<String> Request(Uri path);
 
 class ApiBase {
-  final Cookie _session;
+  final Map<String, String> _authorizationHeader;
   static Uri _baseUri = Uri.parse(Constants.partyApi);
   http.Client _client;
 
@@ -24,7 +23,10 @@ class ApiBase {
   Playback _playback;
   Playlists _playlists;
 
-  ApiBase(this._session) {
+  ApiBase(String accessToken)
+      : this._authorizationHeader = {
+          'Authorization': 'Bearer ${accessToken.toString()}',
+        } {
     _client = new http.Client();
 
     _auth = new Auth(this);
@@ -40,9 +42,8 @@ class ApiBase {
   Playlists get playlists => _playlists;
 
   Future<dynamic> get(Uri path, {bool rawStringResponse = false}) async {
-    http.Response response = await _client.get(path, headers: {
-      'Cookie': _session.toString(),
-    });
+    http.Response response =
+        await _client.get(path, headers: _authorizationHeader);
     String body = utf8.decode(response.bodyBytes);
     handleErrors(response, body);
 
@@ -55,9 +56,7 @@ class ApiBase {
 
   Future<dynamic> post(Uri path,
       {dynamic body, bool rawStringResponse = false}) async {
-    var headers = {
-      'Cookie': _session.toString(),
-    };
+    var headers = _authorizationHeader;
     if (body != null) {
       headers['Content-Type'] = 'application/json';
     }
@@ -85,7 +84,8 @@ class ApiBase {
       var document = ErrorDocument.fromJson(responseJson);
       throw new ApiException.fromPartyErrors(document.errors);
     } else if (response.statusCode != 200) {
-      throw new ApiException('Received an invalid response from the server');
+      throw new ApiException(
+          'Received an invalid response from the server (${response.statusCode})');
     }
   }
 }

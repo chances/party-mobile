@@ -8,6 +8,7 @@ import 'package:party/app_context.dart';
 import 'package:party/constants.dart';
 import 'package:party/models/interop/message.dart';
 import 'package:party/services/auth.dart';
+import 'package:party/services/exceptions.dart';
 import 'package:party/views/widgets/primary_button.dart';
 
 class LoginPage extends StatefulWidget {
@@ -46,8 +47,10 @@ class _LoginPageState extends State<LoginPage> {
         return;
       }
 
-      var authResult = await Auth.withSpotify();
-      var loggedIn = authResult != null;
+      await Future.delayed(new Duration(milliseconds: 300));
+
+      var session = await Auth.withSpotify();
+      var loggedIn = session != null;
 
       // Auth page didn't login (e.g. user pressed back), reset login page
       if (!loggedIn) {
@@ -57,38 +60,39 @@ class _LoginPageState extends State<LoginPage> {
 
       await Future.delayed(new Duration(milliseconds: 500));
 
-      try {
-        print('');
-        print(authResult.tokenType);
-        print(authResult.accessToken);
-        print('');
-
-        // TODO: Exchange tokens with Party API
-        throw UnimplementedError('TODO: Exchange tokens with Party API');
-
-        // await app.login(context, authResult.accessToken);
-      } catch (ex) {
-        // TODO: Send exception to Sentry
-
-        throw Exception('Unable to exchange authorization with Tunage API.');
-      }
+      // TODO: Send breadcrumb to Sentry
+      await app.login(context, session);
     } on Exception catch (ex) {
       app.spotify.logout(context);
 
       setState(() => _loggingIn = false);
+
+      String message;
+
+      if (ex is PlatformException) {
+        message = ex.message;
+        // TODO: Log error details (i.e. JSON details) to Sentry
+      }
+      if (ex is NestedException) {
+        message = '${ex.message}\n\n${ex.innerException.toString()}';
+      }
 
       Scaffold.of(context).showSnackBar(new SnackBar(
         duration: Duration(seconds: 5),
         content: new Text('Could not login.'),
         action: SnackBarAction(
           label: 'More Info',
-          onPressed: () => _showLoginErrorDialog(context, ex.toString()),
+          onPressed: () => _showErrorDialog(
+            context,
+            message ?? 'Unknown error:',
+            message != null ? ex : null,
+          ),
         ),
       ));
     }
   }
 
-  Future<Null> _showLoginErrorDialog(BuildContext context, String message,
+  Future<Null> _showErrorDialog(BuildContext context, String message,
       [Exception ex]) {
     return showDialog(
         context: context,

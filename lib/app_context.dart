@@ -1,11 +1,14 @@
 import 'dart:async';
-import 'dart:io';
+import 'dart:convert';
 
 import 'package:fluro/fluro.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:party/api/base.dart';
 import 'package:party/api/exception.dart';
+import 'package:party/constants.dart';
+import 'package:party/services/exceptions.dart';
+import 'package:party/services/session.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:spotify/spotify_io.dart';
 
@@ -17,7 +20,7 @@ export 'assets.dart';
 final app = new AppContext();
 
 class AppContext {
-  Cookie _session;
+  Session _session;
   ApiBase _api;
 
   Spotify get spotify => Spotify.getInstance();
@@ -29,12 +32,12 @@ class AppContext {
 
   AppContext() {
     SharedPreferences.getInstance().then((prefs) {
-      var session = prefs.getString('PARTY_SESSION');
+      var session = prefs.getString(Constants.prefs.sessionKey);
 
       if (session != null && session.isNotEmpty) {
-        _session = new Cookie.fromSetCookieValue(session);
+        _session = Session.fromJson(json.decode(session));
 
-        _api = new ApiBase(_session);
+        _api = new ApiBase(_session.accessToken);
       }
     });
 
@@ -50,23 +53,35 @@ class AppContext {
 
   ApiBase get api => _api;
 
-  Future login(BuildContext context, [Cookie sessionCookie]) async {
-    if (sessionCookie == null && _session == null) {
-      throw new ArgumentError.notNull('sessionCookie');
-    } else if (sessionCookie != null) {
-      _session = sessionCookie;
+  Future login(BuildContext context, [Session session]) async {
+    if (session == null && _session == null) {
+      throw new ArgumentError.notNull('session');
+    } else if (session != null) {
+      _session = session;
 
       var prefs = await SharedPreferences.getInstance();
-      prefs.setString('PARTY_SESSION', _session.toString()).then((success) {
-        if (!success) throw new Exception('Could not save Party session state');
-      });
+      var wasSessionSaved = await prefs.setString(
+          Constants.prefs.sessionKey, json.encode(_session.toJson()));
+      if (!wasSessionSaved) {
+        throw new NestedException('Could not save session state');
+      }
     }
 
-    _api = new ApiBase(_session);
+    _api = new ApiBase(_session.accessToken);
 
-    await _fetchSpotifyTokenAndParty().catchError((error) => throw error);
+    try {
+      await _fetchSpotifyTokenAndParty().catchError((error) => throw error);
+    } on Exception catch (ex) {
+      await logout(context);
+
+      throw NestedException(
+        'Unable to exchange authorization with Tunage API',
+        ex,
+      );
+    }
 
     // Fetch the current Host's Spotify user profile
+    // TODO: Get this from Auth0 land, via a call to <tenant_domain>/userinfo?
     this.user = await app.spotify.client(context).users.me();
     // TODO: Handle Spotify API errors
 
@@ -80,24 +95,22 @@ class AppContext {
     Navigator.pushReplacement(context, route);
   }
 
-  void logout(BuildContext context) {
+  Future logout(BuildContext context) async {
     if (spotify.isLoggedIn) {
       spotify.logout(context);
     }
 
-    new Future.value(Navigator.of(context).canPop())
-        .then((canPop) => _navigateToLoginPage(context, canPop))
-        .then((_) {
-      _api = null;
-      _session = null;
-      user = null;
-      party = null;
-      playlists.clear();
+    var canPop = Navigator.of(context).canPop();
+    var didPop = await _navigateToLoginPage(context, canPop);
 
-      return SharedPreferences.getInstance();
-    }).then((prefs) {
-      return prefs.clear();
-    });
+    _api = null;
+    _session = null;
+    user = null;
+    party = null;
+    playlists.clear();
+
+    var prefs = await SharedPreferences.getInstance();
+    await prefs.clear();
   }
 
   void logoutIfNecessary(BuildContext context) {
@@ -114,9 +127,9 @@ class AppContext {
         context: context,
         barrierDismissible: true,
         builder: (context) => new AlertDialog(
-              title: new Text('Party Error'),
-              content: new Text(e.message),
-            ),
+          title: new Text('Party Error'),
+          content: new Text(e.message),
+        ),
       );
 
       return party;
@@ -129,16 +142,20 @@ class AppContext {
 
   /// In parallel, get the Host's Spotify access token and the current party, if any
   Future<void> _fetchSpotifyTokenAndParty() async {
-    var getToken = _api.auth.getToken().then(
+    var getToken = Future.value(_session.toSpotifyToken())
+        .then((token) =>
+            token != null ? Future.value(token) : _api.auth.getToken())
+        .then(
           (token) => app.spotify.setToken(
-                token.accessToken,
-                DateTime.parse(token.tokenExpiry),
-              ),
+            token.accessToken,
+            DateTime.parse(token.tokenExpiry),
+          ),
         );
     var getParty = app.api.party.get().then((party) => this.party = party);
     await Future.wait([getToken, getParty]);
   }
 
+  /// Navigate to the root Login route, resolves to [true] when the route did change.
   Future<bool> _navigateToLoginPage(BuildContext context, bool popRoutes) {
     if (popRoutes) {
       Navigator.popUntil(context, (Route route) => route.isFirst);

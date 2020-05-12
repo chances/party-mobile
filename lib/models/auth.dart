@@ -11,6 +11,9 @@ class SpotifyToken extends Object {
   @JsonKey(name: 'access_token')
   String accessToken;
 
+  @JsonKey(name: 'refresh_token')
+  String refreshToken;
+
   @JsonKey(name: 'token_expiry')
   String tokenExpiry;
 }

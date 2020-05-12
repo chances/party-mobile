@@ -24,8 +24,9 @@ class Spotify {
       _accessToken != null && _tokenExpiry != null && !isTokenExpired;
   String get accessToken => _accessToken;
   DateTime get tokenExpiry => _tokenExpiry;
-  int get expiresIn => tokenExpiry.difference(new DateTime.now()).inSeconds;
-  bool get isTokenExpired => _tokenExpiry.isBefore(new DateTime.now());
+  int get expiresIn =>
+      tokenExpiry.difference(new DateTime.now().toUtc()).inSeconds;
+  bool get isTokenExpired => _tokenExpiry.isBefore(new DateTime.now().toUtc());
 
   SpotifyApi client(BuildContext context) {
     if (!isLoggedIn) {
