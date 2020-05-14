@@ -35,6 +35,16 @@ class Party extends Endpoint {
     }
   }
 
+  Future<bool> ping() async {
+    try {
+      await api.get(route('/party/ping'));
+      return true;
+    } catch (ex) {
+      // TODO: Log bad ping/pong to Sentry?
+      return false;
+    }
+  }
+
   Future<Null> end() {
     return api.post(route('/party/end'));
   }
