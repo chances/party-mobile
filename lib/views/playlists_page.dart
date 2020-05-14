@@ -12,11 +12,10 @@ class PlaylistsPage extends StatefulWidget {
 
   static final handler = new Handler(
       handlerFunc: (BuildContext context, Map<String, dynamic> params) {
-        app.logoutIfNecessary(context);
-        
-        return new PlaylistsPage();
-      }
-  );
+    app.logout(context, onlyIfNecessary: true);
+
+    return new PlaylistsPage();
+  });
 
   @override
   _PlaylistsPageState createState() => new _PlaylistsPageState();
@@ -47,21 +46,21 @@ class _PlaylistsPageState extends State<PlaylistsPage> {
 
   @override
   Widget build(BuildContext context) {
-    final actions = [
-      Constants.logoutMenu(context)
-    ];
+    final actions = [Constants.logoutMenu(context)];
 
     if (!_loading) {
-      actions.insert(0, new IconButton(
-        icon: new Icon(Icons.refresh),
-        tooltip: 'Refresh',
-        onPressed: () {
-          setState(() {
-            _forceLoad = true;
-            _loading = true;
-          });
-        },
-      ));
+      actions.insert(
+          0,
+          new IconButton(
+            icon: new Icon(Icons.refresh),
+            tooltip: 'Refresh',
+            onPressed: () {
+              setState(() {
+                _forceLoad = true;
+                _loading = true;
+              });
+            },
+          ));
     }
 
     final media = MediaQuery.of(context);
@@ -76,29 +75,26 @@ class _PlaylistsPageState extends State<PlaylistsPage> {
     );
 
     return new Scaffold(
-        appBar: new AppBar(
-          title: new Text("Your Playlists"),
-          actions: actions,
-          backgroundColor: Constants.statusBarColor,
-          elevation: 4.0,
-          bottom: new PreferredSize(
-              child: new Container(
-                padding: new EdgeInsets.only(
-                  bottom: 16.0,
-                  left: 72.0,
-                ),
-                width: media.size.width,
-                alignment: Alignment.topLeft,
-                child: bottomHelper,
+      appBar: new AppBar(
+        title: new Text("Your Playlists"),
+        actions: actions,
+        backgroundColor: Constants.statusBarColor,
+        elevation: 4.0,
+        bottom: new PreferredSize(
+            child: new Container(
+              padding: new EdgeInsets.only(
+                bottom: 16.0,
+                left: 72.0,
               ),
-              preferredSize: new Size(
-                  media.size.width,
-                  bottomHelperTextStyle.fontSize + 16.0
-              )
-          ),
-        ),
-        bottomNavigationBar: Constants.footer(context),
-        body: buildPlaylistWidget(context),
+              width: media.size.width,
+              alignment: Alignment.topLeft,
+              child: bottomHelper,
+            ),
+            preferredSize: new Size(
+                media.size.width, bottomHelperTextStyle.fontSize + 16.0)),
+      ),
+      bottomNavigationBar: Constants.footer(context),
+      body: buildPlaylistWidget(context),
     );
   }
 
@@ -106,9 +102,7 @@ class _PlaylistsPageState extends State<PlaylistsPage> {
     if (!_loading && app.playlists.isNotEmpty) {
       return buildPlaylistList(context);
     } else if (!_loading && app.playlists.isEmpty) {
-      return buildPlaylistList(
-          context, 'You have no Spotify playlists'
-      );
+      return buildPlaylistList(context, 'You have no Spotify playlists');
     }
 
     return new FutureBuilder<Iterable<PlaylistSimple>>(
@@ -119,42 +113,39 @@ class _PlaylistsPageState extends State<PlaylistsPage> {
             case ConnectionState.none:
             case ConnectionState.waiting:
             case ConnectionState.active:
-              return new Column(children: [
-                new Expanded(child: Constants.loading)
-              ], crossAxisAlignment: CrossAxisAlignment.stretch);
+              return new Column(
+                  children: [new Expanded(child: Constants.loading)],
+                  crossAxisAlignment: CrossAxisAlignment.stretch);
             default:
               return buildPlaylistList(
-                  context,
-                  snapshot.hasError ? snapshot.error : null
-              );
+                  context, snapshot.hasError ? snapshot.error : null);
           }
-        }
-    );
+        });
   }
 
   Widget buildPlaylistList(BuildContext context, [Object error]) {
     var playlistsOrError = error == null
         ? new Column(children: [
-      new Expanded(child: new ListView(
-          children: ListTile.divideTiles(
-              context: context,
-              tiles: app.playlists.map((playlist) {
-                return new ListTile(
-                  leading: playlistSuitableImage(playlist),
-                  title: new Text(
-                    playlist.name,
-                    maxLines: 1,
-                    overflow: TextOverflow.fade,
-                  ),
-                  subtitle: new Text(playlistSubtitle(playlist)),
-                  onTap: () {
-                    Navigator.of(context).pop(playlist);
-                  },
-                );
-              }).toList()
-          ).toList()
-      ))
-    ])
+            new Expanded(
+                child: new ListView(
+                    children: ListTile.divideTiles(
+                            context: context,
+                            tiles: app.playlists.map((playlist) {
+                              return new ListTile(
+                                leading: playlistSuitableImage(playlist),
+                                title: new Text(
+                                  playlist.name,
+                                  maxLines: 1,
+                                  overflow: TextOverflow.fade,
+                                ),
+                                subtitle: new Text(playlistSubtitle(playlist)),
+                                onTap: () {
+                                  Navigator.of(context).pop(playlist);
+                                },
+                              );
+                            }).toList())
+                        .toList()))
+          ])
         : new Center(child: new Text(error));
 
     return playlistsOrError;
@@ -163,13 +154,11 @@ class _PlaylistsPageState extends State<PlaylistsPage> {
   Widget playlistSuitableImage(PlaylistSimple playlist) {
     var images = playlist.images.where((img) => img.width < 500);
     return images.isEmpty
-      ? new Center(
-        child: new Icon(
-            Icons.music_note,
-            color: Constants.colorAccentLightControl
-        ),
-      )
-      : Constants.fadeInImage(images.first.url);
+        ? new Center(
+            child: new Icon(Icons.music_note,
+                color: Constants.colorAccentLightControl),
+          )
+        : Constants.fadeInImage(images.first.url);
   }
 
   String playlistSubtitle(PlaylistSimple playlist) {

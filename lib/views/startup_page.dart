@@ -2,7 +2,6 @@ import 'dart:async';
 
 import 'package:fluro/fluro.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_dotenv/flutter_dotenv.dart';
 
 import 'package:party/app_context.dart';
 import 'package:party/constants.dart';
@@ -21,59 +20,56 @@ class StartupPage extends StatefulWidget {
 
 class _StartupPageState extends State<StartupPage> {
   bool _loading = true;
-  bool _loaded = false;
 
-  Future<Null> _loadUser() async {
-    if (_loaded) return;
+  Future<Null> _loadSessionOrGotoLogin() async {
+    if (!mounted) return;
+    // TODO: Preload common images? (spotify footer, party logo, etc.)
 
-    var isLoggedIn = await app.spotify.loadAndValidateSession();
-    app.user = isLoggedIn ? await app.spotify.client(context).users.me() : null;
+    var isLoggedIn = await Future.wait([
+      app.loadSession(context),
+      Future.delayed(new Duration(milliseconds: 400), () => null),
+    ]).then((value) => value.first);
 
-    if (app.user != null) {
-      app.party = await app.api.party.get();
-    }
+    var didLogout = await app.logout(
+      context,
+      onlyIfNecessary: true,
+      isAppLaunching: true,
+    );
+    if (didLogout) return;
+    assert(isLoggedIn && app.isLoggedIn);
 
     setState(() {
       _loading = false;
     });
 
-    // TODO: Preload common images (spotify footer, party logo, etc.)
+    await Future.delayed(new Duration(milliseconds: 750));
 
-    _loaded = true;
-
-    await new Future.delayed(new Duration(milliseconds: 400), () {});
-
-    // If the current Host is still logged in jump to the Party page,
-    //  otherwise navigate to the login page with a fancy fade
-    final path = app.isLoggedIn ? '/party' : '/login';
-    final transitionDuration = app.isLoggedIn
-        ? new Duration(seconds: 0)
-        : new Duration(milliseconds: 750);
-
+    // If the current Host is still logged in, fade to the Party page
+    assert(app.isLoggedIn);
     final route = app.router
-        .matchRoute(context, path,
-            transitionType: TransitionType.fadeIn,
-            transitionDuration: transitionDuration)
+        .matchRoute(
+          context,
+          '/party',
+          transitionType: TransitionType.fadeIn,
+          transitionDuration: Duration(milliseconds: 500),
+        )
         .route;
     Navigator.pushReplacement(context, route);
   }
 
   @override
   Widget build(BuildContext context) {
-    return new FutureBuilder<Null>(
-        future: _loadUser(),
+    return FutureBuilder<Null>(
+        future: _loadSessionOrGotoLogin(),
         builder: (BuildContext context, AsyncSnapshot<Null> snapshot) {
-          double logoOpacity = 1.0;
-          if (!_loading && app.spotify.isLoggedIn) {
-            logoOpacity = 0.0;
-          }
+          double logoOpacity = !_loading && app.isLoggedIn ? 0 : 1;
 
-          return new AnimatedOpacity(
+          return AnimatedOpacity(
               opacity: logoOpacity,
-              duration: new Duration(milliseconds: 300),
-              child: new Container(
-                decoration: new BoxDecoration(
-                  gradient: new LinearGradient(
+              duration: Duration(milliseconds: 300),
+              child: Container(
+                decoration: BoxDecoration(
+                  gradient: LinearGradient(
                       begin: Alignment.topLeft,
                       end: Alignment.bottomRight,
                       colors: [
@@ -87,8 +83,8 @@ class _StartupPageState extends State<StartupPage> {
                         1.0
                       ]),
                 ),
-                child: new Stack(children: [
-                  new Center(child: Constants.loadingIndicatorWhite)
+                child: Stack(children: [
+                  Center(child: Constants.loadingIndicatorWhite),
                 ]),
               ));
         });

@@ -31,16 +31,6 @@ class AppContext {
   var playlists = <PlaylistSimple>[];
 
   AppContext() {
-    SharedPreferences.getInstance().then((prefs) {
-      var session = prefs.getString(Constants.prefs.sessionKey);
-
-      if (session != null && session.isNotEmpty) {
-        _session = Session.fromJson(json.decode(session));
-
-        _api = new ApiBase(_session.accessToken);
-      }
-    });
-
     spotify.onLogout = (BuildContext context, bool wasAutomatic) {
       if (wasAutomatic) {
         logout(context);
@@ -48,10 +38,29 @@ class AppContext {
     };
   }
 
-  bool get isLoggedIn => _session != null;
+  bool get isLoggedIn => _session != null && spotify.isLoggedIn;
   bool get hasParty => party != null;
 
   ApiBase get api => _api;
+
+  Future<bool> loadSession(BuildContext context) async {
+    var prefs = await SharedPreferences.getInstance();
+    var session = prefs.getString(Constants.prefs.sessionKey);
+    if (session == null) return false;
+    if (session.isNotEmpty) {
+      _session = Session.fromJson(json.decode(session));
+      _api = new ApiBase(_session.accessToken);
+    }
+
+    if (!await spotify.loadAndValidateSession()) return false;
+    // TODO: Reconsider if I _actually_ need the Spotify user so soon. 🤷️ I already have their user ID
+    // user = isLoggedIn ? await spotify.client(context).users.me() : null;
+    // if (user == null) return false;
+
+    party = await api.party.get();
+
+    return true;
+  }
 
   Future login(BuildContext context, [Session session]) async {
     if (session == null && _session == null) {
@@ -95,30 +104,6 @@ class AppContext {
     Navigator.pushReplacement(context, route);
   }
 
-  Future logout(BuildContext context) async {
-    if (spotify.isLoggedIn) {
-      spotify.logout(context);
-    }
-
-    var canPop = Navigator.of(context).canPop();
-    var didPop = await _navigateToLoginPage(context, canPop);
-
-    _api = null;
-    _session = null;
-    user = null;
-    party = null;
-    playlists.clear();
-
-    var prefs = await SharedPreferences.getInstance();
-    await prefs.clear();
-  }
-
-  void logoutIfNecessary(BuildContext context) {
-    if (!app.spotify.isLoggedIn) {
-      logout(context);
-    }
-  }
-
   Future<Party> endParty(BuildContext context) async {
     try {
       await api.party.end();
@@ -140,6 +125,36 @@ class AppContext {
     return null;
   }
 
+  Future<bool> logout(BuildContext context,
+      {bool onlyIfNecessary = false, bool isAppLaunching = false}) async {
+    // Carry on if the user's session isn't expired
+    if (onlyIfNecessary && isLoggedIn && !app._session.isExpired) {
+      return false;
+    }
+
+    if (isLoggedIn) {
+      // TODO: Call the API's logout endpoint
+    }
+
+    if (spotify.isLoggedIn) {
+      spotify.logout(context);
+    }
+
+    var canPop = Navigator.of(context).canPop();
+    var didPop = await _navigateToLoginPage(context, canPop, isAppLaunching);
+
+    _api = null;
+    _session = null;
+    user = null;
+    party = null;
+    playlists.clear();
+
+    var prefs = await SharedPreferences.getInstance();
+    await prefs.clear();
+
+    return true;
+  }
+
   /// In parallel, get the Host's Spotify access token and the current party, if any
   Future<void> _fetchSpotifyTokenAndParty() async {
     var getToken = Future.value(_session.toSpotifyToken())
@@ -151,19 +166,28 @@ class AppContext {
             DateTime.parse(token.tokenExpiry),
           ),
         );
-    var getParty = app.api.party.get().then((party) => this.party = party);
+    var getParty =
+        app.api.party.get().then((currentParty) => this.party = currentParty);
     await Future.wait([getToken, getParty]);
   }
 
   /// Navigate to the root Login route, resolves to [true] when the route did change.
-  Future<bool> _navigateToLoginPage(BuildContext context, bool popRoutes) {
+  Future<bool> _navigateToLoginPage(BuildContext context, bool popRoutes,
+      [bool isAppLaunching = false]) {
     if (popRoutes) {
       Navigator.popUntil(context, (Route route) => route.isFirst);
     }
 
     final route = app.router
-        .matchRoute(context, '/login',
-            transitionType: TransitionType.inFromBottom)
+        .matchRoute(
+          context,
+          '/login',
+          transitionType: isAppLaunching
+              ? TransitionType.fadeIn
+              : TransitionType.inFromBottom,
+          transitionDuration:
+              isAppLaunching ? new Duration(milliseconds: 750) : Duration.zero,
+        )
         .route;
     Navigator.pushReplacement(context, route);
     // ignore: invalid_use_of_protected_member
