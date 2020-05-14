@@ -45,7 +45,8 @@ class ApiBase {
     http.Response response =
         await _client.get(path, headers: _authorizationHeader);
     String body = utf8.decode(response.bodyBytes);
-    handleErrors(response, body);
+    var errors = handleErrors(response, body, throwOnNotFound: false);
+    if (errors.first.code == 404) return null;
 
     if (!rawStringResponse) {
       return json.decode(body);
@@ -71,21 +72,40 @@ class ApiBase {
     return responseBody;
   }
 
-  void handleErrors(http.Response response, String body) {
+  List<PartyError> handleErrors(http.Response response, String body,
+      {bool throwOnNotFound = true}) {
+    var isStatusSuccessful =
+        response.statusCode >= 200 || response.statusCode < 300;
+    if (isStatusSuccessful) return null;
+
+    List<PartyError> errors = [];
     if (response.statusCode == 404) {
-      PartyError error = new PartyError();
+      var error = PartyError();
       error.code = response.statusCode;
       error.message = 'Could not find the requested resource';
-      throw new ApiException.fromPartyErrors([error]);
-    } else if (response.statusCode != 200 &&
-        response.headers.containsKey('content-type') &&
-        response.headers['content-type'].startsWith('application/json')) {
-      var responseJson = json.decode(body);
-      var document = ErrorDocument.fromJson(responseJson);
-      throw new ApiException.fromPartyErrors(document.errors);
-    } else if (response.statusCode != 200) {
-      throw new ApiException(
-          'Received an invalid response from the server (${response.statusCode})');
+      errors.add(error);
     }
+    // Try to parse a detailed error response
+    if (response.headers.containsKey('content-type') &&
+        response.headers['content-type'].startsWith('application/json')) {
+      try {
+        var responseJson = json.decode(body);
+        var document = ErrorDocument.fromJson(responseJson);
+        errors.addAll(document.errors);
+      } on Exception catch (ex) {
+        var error = PartyError();
+        error.code = response.statusCode;
+        error.message = ex.toString();
+        errors.add(error);
+      }
+    }
+
+    if (response.statusCode == 404 && !throwOnNotFound) return errors;
+
+    if (errors.isEmpty)
+      throw ApiException(
+          'Received an invalid response from the server (${response.statusCode})');
+
+    throw ApiException.fromPartyErrors(errors);
   }
 }
