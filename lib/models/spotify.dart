@@ -87,6 +87,7 @@ class Spotify {
         }
       } catch (e) {
         setToken(null, null);
+        // TODO: Send this to Sentry?
       }
 
       return isLoggedIn;

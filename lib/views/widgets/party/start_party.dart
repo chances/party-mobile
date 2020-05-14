@@ -12,28 +12,28 @@ class StartParty extends StatelessWidget {
   Widget build(BuildContext context) {
     return Stack(
       children: <Widget>[
-        new Center(
-            child: new Column(
+        Center(
+            child: Column(
           children: [
-            new Padding(
-              padding: new EdgeInsets.only(bottom: 16.0),
-              child: new SplashPrompt('Get this party started',
+            Padding(
+              padding: EdgeInsets.only(bottom: 16.0),
+              child: SplashPrompt('Get this party started',
                   ['Host a party with music, games, and fun!']),
             ),
-            new PrimaryButton('Start', onPressed: onStartPressed)
+            PrimaryButton('Start', onPressed: onStartPressed)
           ],
           mainAxisAlignment: MainAxisAlignment.center,
           crossAxisAlignment: CrossAxisAlignment.center,
         )),
-        new Positioned(
+        Positioned(
           bottom: 16.0,
           left: 0.0,
           right: 0.0,
-          child: new Row(
+          child: Row(
             children: [
-              new RaisedButton(
+              RaisedButton(
                 onPressed: () {},
-                child: new Text('Previous Parties'),
+                child: Text('Previous Parties'),
               )
             ],
             mainAxisAlignment: MainAxisAlignment.center,

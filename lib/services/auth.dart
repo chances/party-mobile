@@ -7,7 +7,6 @@ class Auth {
   static Future<Session> withSpotify() async {
     try {
       var appAuth = FlutterAppAuth();
-      print(Constants.auth.authorizeWithSpotifyEndpoint);
       var result =
           await appAuth.authorizeAndExchangeCode(AuthorizationTokenRequest(
         Constants.auth.clientId,

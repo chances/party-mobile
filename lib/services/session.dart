@@ -83,8 +83,6 @@ class Session {
     var payload = _accessTokenJws.unverifiedPayload.jsonContent;
     // What's the jws.unverifiedPayload.protectedHeader.`kid` claim? https://stackoverflow.com/q/43867440/1363247
 
-    // print("\nAccess Token:\nprotected parameters: ${payload.protectedHeader.toJson()}\n\n");
-
     var commonPropsValid =
         _isTokenCommonPropsValid(Constants.auth.domain, payload);
     var audienceValid = false;

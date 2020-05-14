@@ -82,51 +82,15 @@ class _LoginPageState extends State<LoginPage> {
         content: new Text('Could not login.'),
         action: SnackBarAction(
           label: 'More Info',
-          onPressed: () => _showErrorDialog(
+          onPressed: () => showErrorDialog(
             context,
-            message ?? 'Unknown error:',
-            message != null ? ex : null,
+            'Could not Login',
+            ex,
+            message,
           ),
         ),
       ));
     }
-  }
-
-  Future<Null> _showErrorDialog(BuildContext context, String message,
-      [Exception ex]) {
-    return showDialog(
-        context: context,
-        builder: (context) {
-          return AlertDialog(
-            title: Text('Could not Login'),
-            content: Column(
-              mainAxisSize: MainAxisSize.min,
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: <Widget>[
-                Text(message),
-                Padding(
-                  padding: const EdgeInsets.only(top: 8.0),
-                  child: ex != null ? Text(ex.toString()) : null,
-                ),
-              ],
-            ),
-            actions: <Widget>[
-              FlatButton(
-                child: Text('Submit Feedback'),
-                onPressed: () {
-                  Navigator.of(context).pop();
-                  // TODO: Sentry feedback form, mailto: link, or something?
-                },
-              ),
-              FlatButton(
-                child: Text('OK'),
-                onPressed: () {
-                  Navigator.of(context).pop();
-                },
-              )
-            ],
-          );
-        });
   }
 
   @override
